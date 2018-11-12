@@ -13,6 +13,12 @@ app.use(express.static(__dirname + '/../client/dist'));
 
 app.use('/api', routes);
 
+app.get('/*', (req, res) => {
+  console.log(req.url);
+  // res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  res.render(__dirname, '../client/src/index.jsx')
+});
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
