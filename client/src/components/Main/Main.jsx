@@ -10,10 +10,12 @@ class Main extends React.Component {
     super();
     this.state = {
       songBank: [],
+      roomID: null,
     };
 
     this.updateSongBank = this.updateSongBank.bind(this);
     this.dropDownSongs = this.dropDownSongs.bind(this);
+    this.testing = this.testing.bind(this);
   }
 
   updateSongBank(input) {
@@ -38,12 +40,31 @@ class Main extends React.Component {
     })
   }
 
+  testing() {
+    axios.get('/testing', {
+      params: {
+        roomID: 1,
+        artist: 'Adele',
+      }
+    })
+    .then(({data}) => {
+      console.log('GOT DATA', data)
+      this.setState({
+        songBank: data
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
   render() {
     return (
       <div>
         <h1>Project 4!</h1>
         <SongList songBank={this.state.songBank} dropDownSongs={this.dropDownSongs} />
         <SearchBar updateSongBank={this.updateSongBank} />
+        <button onClick={this.testing}>TEST BUTTON!</button>
       </div>
     )
   }
