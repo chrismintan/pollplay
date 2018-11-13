@@ -7,7 +7,7 @@ class DropDownSongList extends React.Component {
     let songSelection = this.props.spotifyResults.map( (spotifyResults, index) => {
 
       return (
-        <DropDownSong song={spotifyResults.title} selectSong={spotifyResults.selectSong} />
+        <DropDownSong key={index} title={spotifyResults.name} artist={spotifyResults.artists[0].name} image={spotifyResults.album.images[2].url} selectSong={spotifyResults.selectSong} />
       )
     })
 

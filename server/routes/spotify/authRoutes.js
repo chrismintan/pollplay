@@ -32,6 +32,7 @@ router.get('/login', passport.authenticate('spotify', {
 }));
 
 router.get('/spotify/redirect', passport.authenticate('spotify', {failureRedirect: '/login'}), (req, res) => {
+  console.log('HERE!', req)
   req.session.spotifyId = req.user[0].spotify_id;
   console.log(req.session);
   res.redirect('/');

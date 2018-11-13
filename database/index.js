@@ -33,29 +33,74 @@ pool.on('error', function(err) {
   console.log('idle client error', err.message, err.stack);
 });
 
-const getSongInRoom = (req, res) => {
-  // pool.query(`SELECT * FROM songs`, (err, result) => {
-  //   if ( err ) {
-  //     console.log(err)
-  //   } else {
-  //     res.json(result.rows)
-  //   }
-  // })
-  console.log('params: ', req.params)
-  console.log('query: ', req.query)
-  let text = `SELECT * FROM songs WHERE artist = '${req.query.artist}'`;
-  pool.query(text, (err, result) => {
-    if (err) {
-      // console.log(err);
+const addUser = (req, res) => {
+  console.log(req.spotify_id)
+  let text = `SELECT * FROM users WHERE spotify_id = '${req.spotify_id}'`;
+  pool.query(text, (err, existingUser) => {
+    if ( err ) {
+      console.log('error: ', err)
       res.sendStatus(500);
     } else {
-      res.json(result.rows);
+      if ( existingUser.rows == 0 ) {
+        console.log(req)
+        let text1 = `INSERT INTO users (spotify_id, spotify_display_name, access_token, refresh_token, token_expires_at) VALUES ($1, $2, $3, $4, $5)`;
+
+        let values1 = [req.spotify_id, req.spotify_display_name, req.access_token, req.refresh_token, req.token_expires_at];
+
+        pool.query(text1, values1, (err, result) => {
+          if ( err ) {
+            console.log('error: ', err)
+            res.sendStatus(500);
+          } else {
+            res(null, result)
+          }
+        })
+      } else {
+        res(null, existingUser)
+      }
     }
   })
 }
 
+const getAccessToken = (req, res) => {
+  let text = `SELECT access_token FROM users WHERE id = '${req.req}'`
+  pool.query(text, (err, result) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res(null, result)
+    }
+  })
+}
+
+const getSongsInRoom = (req, res) => {
+  let text = `SELECT * FROM songs INNER JOIN songs_rooms ON songs.id = songs_rooms.song_id WHERE songs_rooms.room_id = '${req.query.roomID}'`;
+  pool.query(text, (err, result) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send(result.rows);
+    }
+  })
+}
+
+const getUserBySpotifyId = (req, res) => {
+  let text = `SELECT * FROM users WHERE spotify_id = '${req.spotify_id}'`;
+  pool.query(text, (err, result) => {
+    if ( err ) {
+      res(err);
+    } else {
+      console.log('2')
+      res(null, result.rows);
+    }
+  });
+};
+
 module.exports = {
-  getSongInRoom
+  addUser,
+  getAccessToken,
+  getSongsInRoom,
+  getUserBySpotifyId,
 }
 
 

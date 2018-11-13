@@ -28,16 +28,24 @@ class SearchBar extends React.Component {
     this.props.updateSongBank(this.state.input)
     console.log('Clicked!')
 
-    let spotifyResults = []
-    for ( let i = 0; i < 5; i++ ) {
-      let song = {
-        title: data.tracks.items[i].name,
-        artist: data.tracks.items[i].artists[0].name,
+    axios.get('/spotify/search', {
+      params: {
+        query: this.state.input
       }
-      spotifyResults.push(song);
-    }
-    this.setState({
-      spotifyResults: spotifyResults,
+    })
+    .then(({data: {items}}) => {
+      console.log('ITEMS:   ', items)
+
+      // Artist = items[0].artists[0].name
+      // Track = items[0].name
+      // Album = items[0].album.name
+      // Album Image = items[0].album.images[2].url
+
+      this.setState({
+        spotifyResults: items,
+      });
+      }).catch(function(error){
+        console.log(error)
     })
   }
 
@@ -48,12 +56,11 @@ class SearchBar extends React.Component {
   render() {
     return (
       <div>
-        <form action="GET">
+        <form>
           <input type="text" value={this.state.input} onChange={this.handleInputChange} />
-          <button onClick={this.handleClick}>Submit!</button>
-
-          <DropDownSongList spotifyResults={this.state.spotifyResults} selectSong={this.selectSong} />
+          <button onClick={this.handleClick}>Search!</button>
         </form>
+        <DropDownSongList spotifyResults={this.state.spotifyResults} selectSong={this.selectSong} />
       </div>
     )
   }
