@@ -15,7 +15,7 @@ class App extends React.Component {
     let component = <Main />
 
     return (
-      <div>
+      <div className='whole'>
         {component}
       </div>
     )

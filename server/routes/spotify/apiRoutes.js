@@ -37,7 +37,7 @@ router.get('/search', (req, res) => {
   //       params: {
   //         q: query,
   //         type: "track",
-  //         limit: 20
+  //         limit: 10
   //       }
   //     })
   //     .then(({data: {tracks}}) => {
@@ -56,7 +56,7 @@ router.get('/search', (req, res) => {
     params: {
       q: query,
       type: "track",
-      limit: 20
+      limit: 10
     }
   })
   .then(({data: {tracks}}) => {

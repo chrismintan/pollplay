@@ -4,13 +4,15 @@ import axios from 'axios';
 import SearchBar from './Search/SearchBar.jsx';
 import SongList from './SongList.jsx';
 import Song from './Song.jsx';
-import CurrentSong from './CurrentSong.jsx';
+import CurrentSong from './NowPlaying/CurrentSong.jsx';
+import NavBar from '../NavBar.jsx';
+import io from 'socket.io-client';
 
 class Main extends React.Component {
   constructor() {
     super();
     this.state = {
-      currentSong: [1,2,3],
+      currentSong: null,
       songBank: [],
       roomID: 3,
     };
@@ -90,15 +92,16 @@ class Main extends React.Component {
   }
 
   render() {
+    let currentSong = this.state.currentSong ? <CurrentSong image={this.state.currentSong[2]} title={this.state.currentSong[0]} artist={this.state.currentSong[1]} /> : "";
     return (
       <div>
+        <NavBar />
         <h1>Project 4!</h1>
-        <SongList songBank={this.state.songBank} dropDownSongs={this.dropDownSongs} />
         <SearchBar updateSongBank={this.updateSongBank} />
         <button onClick={this.testing}>TEST BUTTON!</button>
         <a href='/auth/login'>Log in</a>
         <div>
-          <CurrentSong image={this.state.currentSong[2]} title={this.state.currentSong[0]} artist={this.state.currentSong[1]} />
+          {currentSong}
           <button onClick={this.getCurrentSong}>Get Current Song</button>
           <button onClick={this.nextSong}>Next Song</button>
         </div>

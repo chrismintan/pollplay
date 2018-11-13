@@ -1,5 +1,6 @@
 import React from 'react';
 import DropDownSong from './DropDownSong.jsx';
+import SearchResults from './SearchResults.jsx';
 
 class DropDownSongList extends React.Component {
   render() {
@@ -7,7 +8,7 @@ class DropDownSongList extends React.Component {
     let songSelection = this.props.spotifyResults.map( (spotifyResults, index) => {
 
       return (
-        <DropDownSong key={index} title={spotifyResults.name} artist={spotifyResults.artists[0].name} image={spotifyResults.album.images[2].url} selectSong={spotifyResults.selectSong} />
+        <SearchResults key={index} title={spotifyResults.name} artist={spotifyResults.artists[0].name} image={spotifyResults.album.images[1].url} selectSong={spotifyResults.selectSong} />
       )
     })
 

@@ -1,0 +1,54 @@
+.side-nav {
+  min-height: 100vh;
+  position: fixed;
+  width: 150px;
+  padding: 10px 20px;
+  transition: all 0.3s;
+}
+
+.side-nav.hidden {
+  background: transparent;
+  transform: translateX(-72%);
+}
+
+.side-nav.active {
+  background: rgb(54, 54, 54);
+  transform: translateX(0);
+}
+
+.nav-carrot {
+  width: 100%;
+}
+
+.nav-carrot>i {
+  float: right;
+}
+
+.nav-carrot:hover {
+  cursor: pointer;
+}
+
+.nav-logo {
+  width: 90px;
+}
+
+.nav-logo>img {
+  max-height: 100%;
+  max-width:100%;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-link {
+  font-weight: 200;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 10px 0;
+}
+
+.nav-link:hover {
+  color: rgba(255, 255, 255, 1);
+  cursor: pointer;
+}
