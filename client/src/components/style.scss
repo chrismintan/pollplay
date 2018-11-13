@@ -1,18 +1,19 @@
 .side-nav {
   min-height: 100vh;
   position: fixed;
-  width: 150px;
+  width: 250px;
   padding: 10px 20px;
   transition: all 0.3s;
+
 }
 
 .side-nav.hidden {
-  background: transparent;
   transform: translateX(-72%);
 }
 
 .side-nav.active {
-  background: rgb(54, 54, 54);
+	z-index: 1000;
+  background: #181818FF;
   transform: translateX(0);
 }
 

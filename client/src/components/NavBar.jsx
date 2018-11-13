@@ -12,7 +12,6 @@ class NavBar extends React.Component {
   }
 
   toggleActive() {
-    console.log('clicked!')
     this.setState({
       active: !this.state.active,
     });
@@ -20,7 +19,7 @@ class NavBar extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="navbar">
         <div className="nav-carrot"><button className="fas fa-chevron-right" onClick={this.toggleActive}>Toggle!</button></div>
         <div className={this.state.active ? "side-nav active" : "side-nav hidden"}>
           <div className="nav-logo">

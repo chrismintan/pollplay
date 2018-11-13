@@ -62,8 +62,8 @@ const addUser = (req, res) => {
   })
 }
 
-const getAccessToken = (req, res) => {
-  let text = `SELECT access_token FROM users WHERE id = '${req.req}'`
+const getAccessTokenAndExpiresAt = (req, res) => {
+  let text = `SELECT * FROM users WHERE id = '${req.req}'`
   pool.query(text, (err, result) => {
     if (err) {
       res.sendStatus(500);
@@ -96,11 +96,23 @@ const getUserBySpotifyId = (req, res) => {
   });
 };
 
+const updateAccessTokenAndExpiresAt = (req, res) => {
+  let text = `UPDATE users SET access_token = '${req.access_token}', token_expires_at = '${req.token_expires_at}' WHERE id = ${req.user_id}`;
+  pool.query(text, (err, result) => {
+    if ( err ) {
+      res(err);
+    } else {
+      res(null, result.rows);
+    }
+  })
+}
+
 module.exports = {
   addUser,
-  getAccessToken,
+  getAccessTokenAndExpiresAt,
   getSongsInRoom,
   getUserBySpotifyId,
+  updateAccessTokenAndExpiresAt,
 }
 
 
