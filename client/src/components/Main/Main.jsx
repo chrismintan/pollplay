@@ -14,7 +14,9 @@ class Main extends React.Component {
     this.state = {
       currentSong: null,
       songBank: [],
-      roomID: 3,
+      roomID: null,
+      access_token: null,
+      spotify_id: null,
     };
 
     this.updateSongBank = this.updateSongBank.bind(this);
@@ -26,12 +28,10 @@ class Main extends React.Component {
     // For testing functions
     this.testing = this.testing.bind(this);
     this.socket = io.connect();
-    this.socket.on('connect', () => {
-      console.log('connected to client side!')
-    })
-    this.socket.on('updatePlayer', function(data) {
-      console.log(data)
-    })
+    // this.socket.on('updatePlayer', function(data) {
+    //   console.log(data)
+    // })
+
   }
 
   updateSongBank(input) {
@@ -43,17 +43,32 @@ class Main extends React.Component {
   }
 
   componentDidMount() {
-    let songBank = []
-    for ( let i = 0; i < 5; i++ ) {
-      let song = {
-        title: data.tracks.items[i].name,
-        artist: data.tracks.items[i].artists[0].name
-      }
-      songBank.push(song)
-    }
-    this.setState({
-      songBank: songBank,
+    this.socket.on('message', function(data) {
+      console.log('Incoming message:', data)
     })
+    let room='abc123'
+    this.socket.emit('room', room)
+    const {roomId} = this.props.match.params;
+    axios.get(`/spotify/rooms/${roomId}`, {
+      params: {
+        query: roomId
+      }
+    })
+    .then(({data}) => {
+      console.log(data);
+      this.setState({
+        spotify_id: data[0].spotify_id,
+        roomID: data[0].name,
+        access_token: data[0].access_token,
+      })
+      console.log(this.state)
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
+
+
     let reactThis = this;
 
     // setInterval(function() {
@@ -66,11 +81,14 @@ class Main extends React.Component {
     // this.socket.on('news_by_server', function(data){
     //   console.log(data)
     // })
+    let room = 'abc123'
+
+    // console.log(this.state)
 
     let data = 'TEST!'
 
-    this.socket.emit('player move', data)
 
+    this.socket.emit('abc123', { data: 'testObj' })
   }
 
   // testing() {

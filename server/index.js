@@ -76,18 +76,18 @@ const server = app.listen(port, () => {
 const io = require('socket.io')(server);
 
 io.sockets.on('connection', (socket) => {
-  console.log('SOCKET CONNECTED!', socket.id)
+  console.log('Connected!')
 
-  // Set up event listeners
-  // if (  ) {
-  //   setInterval(function(){
-  //     socket.emit('news_by_server', 'Cow goes moo!');
-  //   }, 1000)
-  // }
-
-  socket.on('player move', function(msg) {
-    io.sockets.emit('updatePlayer', msg)
+  socket.on('room', (room, data) => {
+    socket.join(room);
+    let room1 = 'abc123'
+    io.sockets.in(room1).emit('message', 'what is going on, party people?');
+    socket.on('abc123', function(data) {
+      io.sockets.emit('message', data)
+    })
   })
+
+
 
 })
 

@@ -108,7 +108,7 @@ const getRoomData = (req, res) => {
     if ( err ) {
       res.sendStatus(500);
     } else {
-      res.send(result.rows);
+      res(null, result.rows);
     }
   })
 }
@@ -119,7 +119,7 @@ const getSongsInRoom = (req, res) => {
     if (err) {
       res.sendStatus(500);
     } else {
-      res.send(result.rows);
+      res(null, result.rows);
     }
   })
 }

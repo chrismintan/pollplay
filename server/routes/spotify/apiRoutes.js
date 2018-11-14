@@ -73,12 +73,12 @@ const updateAccessToken = async (req, res, next) => {
 
 router.use(accessToken, getNewAccessToken, updateAccessToken);
 
-router.get('/roomData', (req, res) => {
-  db.getRoomData({ room: roomCode }, (err, result) => {
+router.get('/rooms/:roomId', (req, res) => {
+  db.getRoomData({ room: req.query.query }, (err, result) => {
     if ( err ) {
       console.log(err);
     } else {
-      res.json(result.rows)
+      res.json(result)
     }
   })
 })
