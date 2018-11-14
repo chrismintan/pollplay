@@ -5,7 +5,6 @@ import SearchBar from './Search/SearchBar.jsx';
 import SongList from './SongList.jsx';
 import Song from './Song.jsx';
 import CurrentSong from './NowPlaying/CurrentSong.jsx';
-import NavBar from '../NavBar.jsx';
 import io from 'socket.io-client';
 import styles from './style.scss';
 
@@ -26,6 +25,13 @@ class Main extends React.Component {
 
     // For testing functions
     this.testing = this.testing.bind(this);
+    this.socket = io.connect();
+    this.socket.on('connect', () => {
+      console.log('connected to client side!')
+    })
+    this.socket.on('updatePlayer', function(data) {
+      console.log(data)
+    })
   }
 
   updateSongBank(input) {
@@ -48,55 +54,71 @@ class Main extends React.Component {
     this.setState({
       songBank: songBank,
     })
-    this.getCurrentSong();
+    let reactThis = this;
+
+    // setInterval(function() {
+    // let data1 = 'testing'
+    //   reactThis.socket.emit('player move', new Date)
+    // }, 3000)
   }
 
   testing() {
-    let jsonData = {
-      name: 'PollPlay Playlist',
-      public: true,
-      description: 'Vote Away'
-    };
+    // this.socket.on('news_by_server', function(data){
+    //   console.log(data)
+    // })
 
-    // Send entered data to create a playlist in Spotify
-    axios({
-      method: 'POST',
-      url: `https://api.spotify.com/v1/users/1190683361/playlists`,
-      data: jsonData,
-      dataType: 'json',
-      headers: {
-        'Authorization': `Bearer BQApQWXOG9PDicEvi2axl8kHvbKcsamM44-w37J0rC-NKrWKoV24ERweMUKAFtTcyLJKsnGz4JUKXIUUOKXaVAegi5h400HlhGtuPq-sb91edAP6ZxFpJL2rFi-tileDeBVkEZSmprQnZzyNhH-w56P3kE_cIPoXEUmLQqhnN9ya0J2Eg4Qo6HNIpQ2UBysKtK-ptMRFBrfQ3rrGCU_Vmeqm2CO7k-CgDGkYGNjHHhEfTekzLw0bcyJaOdwFxS0x13hTBN-rdM8prw`,
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(res => {
-      const data = {
-        name: res.data.name,
-        externalUrl: res.data.external_urls.spotify,
-        playlistId: res.data.id,
-      }
-      console.log(data)
-    })
+    let data = 'TEST!'
 
-  // fetch(`https://api.spotify.com/v1/users/1190683361/playlists`, {
-  //   headers: {
-  //     Authorization: `Bearer BQCcCGP0GHTVqAb8GHxQ49xgrBqSU57wuG9xhJR6WfHFhyFs6EPWwBBn9yTnfszHCHrkY30m2k4aPWXAJRlU4Pq3pA-acJMLb2OPipKSXlVP8SAS6aflkzgqP_BgxY_jsaeo28ajivPnN6gB5BtmkanZo6J4reaphiTW9Jmpv0L8LW6v4TNfnT6wYGwxff1eawvirBEgd8kc1IHMM8j424L8_BJGwXBBbBZGp_WTICv_RX9yFIifhCtPdoeZ3d0sYgsHXEin-ytQEQ`
-  //   },
-  //   contentType: 'application/json',
-  //   method: 'POST',
-  //   body: JSON.stringify({
-  //     "name": `PollPlay Playlist!`,
-  //     "description": `Vote Away!`
-  //   })
-  // }).then(playlist => {
-  //   console.log(playlist);
-  //   return playlist.json();
-  // }).catch(err => {
-  //   console.log(err);
-  // })
-    // const {data} = await axios.post('/spotify/initPlaylist');
-    // console.log(data)
+    this.socket.emit('player move', data)
+
   }
+
+  // testing() {
+  //   let jsonData = {
+  //     name: 'PollPlay Playlist',
+  //     public: true,
+  //     description: 'Vote Away'
+  //   };
+
+  //   // Send entered data to create a playlist in Spotify
+  //   axios({
+  //     method: 'POST',
+  //     url: `https://api.spotify.com/v1/users/1190683361/playlists`,
+  //     data: jsonData,
+  //     dataType: 'json',
+  //     headers: {
+  //       'Authorization': `Bearer BQApQWXOG9PDicEvi2axl8kHvbKcsamM44-w37J0rC-NKrWKoV24ERweMUKAFtTcyLJKsnGz4JUKXIUUOKXaVAegi5h400HlhGtuPq-sb91edAP6ZxFpJL2rFi-tileDeBVkEZSmprQnZzyNhH-w56P3kE_cIPoXEUmLQqhnN9ya0J2Eg4Qo6HNIpQ2UBysKtK-ptMRFBrfQ3rrGCU_Vmeqm2CO7k-CgDGkYGNjHHhEfTekzLw0bcyJaOdwFxS0x13hTBN-rdM8prw`,
+  //       'Content-Type': 'application/json'
+  //     }
+  //   })
+  //   .then(res => {
+  //     const data = {
+  //       name: res.data.name,
+  //       externalUrl: res.data.external_urls.spotify,
+  //       playlistId: res.data.id,
+  //     }
+  //     console.log(data)
+  //   })
+
+  // // fetch(`https://api.spotify.com/v1/users/1190683361/playlists`, {
+  // //   headers: {
+  // //     Authorization: `Bearer BQCcCGP0GHTVqAb8GHxQ49xgrBqSU57wuG9xhJR6WfHFhyFs6EPWwBBn9yTnfszHCHrkY30m2k4aPWXAJRlU4Pq3pA-acJMLb2OPipKSXlVP8SAS6aflkzgqP_BgxY_jsaeo28ajivPnN6gB5BtmkanZo6J4reaphiTW9Jmpv0L8LW6v4TNfnT6wYGwxff1eawvirBEgd8kc1IHMM8j424L8_BJGwXBBbBZGp_WTICv_RX9yFIifhCtPdoeZ3d0sYgsHXEin-ytQEQ`
+  // //   },
+  // //   contentType: 'application/json',
+  // //   method: 'POST',
+  // //   body: JSON.stringify({
+  // //     "name": `PollPlay Playlist!`,
+  // //     "description": `Vote Away!`
+  // //   })
+  // // }).then(playlist => {
+  // //   console.log(playlist);
+  // //   return playlist.json();
+  // // }).catch(err => {
+  // //   console.log(err);
+  // // })
+  //   // const {data} = await axios.post('/spotify/initPlaylist');
+  //   // console.log(data)
+  // }
 
   async getCurrentSong() {
     const {data: {songData}} = await axios.get('/spotify/currentSong');
@@ -125,7 +147,6 @@ class Main extends React.Component {
     let currentSong = this.state.currentSong ? <CurrentSong image={this.state.currentSong[2]} title={this.state.currentSong[0]} artist={this.state.currentSong[1]} /> : "";
     return (
       <div>
-        <NavBar />
         <div className='mainbody'>
           <h1>Project 4!</h1>
           <SearchBar updateSongBank={this.updateSongBank} />

@@ -1,23 +1,35 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../../../database/index')
+const db = require('../../../database/index');
+const cookieSession = require('cookie-session');
 
-router.get('/isLoggedIn', (req, res) => {
-  res.json(req.session.spotifyId || null);
-});
+// Legacy route --
+// router.get('/isLoggedIn', (req, res) => {
+//   res.json(req.session.spotifyId || null);
+// });
 
 router.post('/createRoom', (req, res) => {
-  const {roomName} = req.body;
-  db.addRoom(roomName, req.session.spotifyId, (err, room) => {
+  db.addRoom({ roomName: req.body.roomName, spotifyId: req.body.spotifyId }, (err, result) => {
     if (err) {
       console.log(err);
       res.sendStatus(500);
     } else {
-      req.session.roomId = room.insertId;
-      res.json(room.insertId);
+      console.log('room created!', result.rows[0].name)
+      res.json(result.rows[0].name);
     }
   });
 });
+
+router.post('/rooms/:roomId', (req, res) => {
+  db.showAllSongsInRoom( { roomId: req.params.roomId }, (err, result) => {
+    if ( err ) {
+      console.log('NO DATA:', err);
+      res.sendStatus(500);
+    } else {
+      req.session
+    }
+  })
+})
 
 router.get('/getAllSongs', (req, res) => {
   let roomId = req.session.roomId;

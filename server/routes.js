@@ -1,9 +1,9 @@
-const express = require('express');
+// const express = require('express');
 
-const router = express.Router();
+// const router = express.Router();
 
-router.route('/movie').get((req, res) => {
+// router.route('/movie').get((req, res) => {
 
-});
+// });
 
-module.exports = router;
+// module.exports = router;

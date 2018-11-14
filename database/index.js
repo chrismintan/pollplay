@@ -33,6 +33,21 @@ pool.on('error', function(err) {
   console.log('idle client error', err.message, err.stack);
 });
 
+const addRoom = (req, res) => {
+  let text = `INSERT INTO rooms (name, spotify_id) VALUES ($1, $2) RETURNING *`;
+
+  let values = [req.roomName, req.spotifyId];
+
+  pool.query(text, values, (err, result) => {
+    if ( err ) {
+      console.log('error:', err);
+      res.sendStatus(500);
+    } else {
+      res(null, result);
+    }
+  })
+}
+
 const addUser = (req, res) => {
   console.log(req.spotify_id)
   let text = `SELECT * FROM users WHERE spotify_id = '${req.spotify_id}'`;
@@ -43,9 +58,9 @@ const addUser = (req, res) => {
     } else {
       if ( existingUser.rows == 0 ) {
         console.log(req)
-        let text1 = `INSERT INTO users (spotify_id, spotify_display_name, access_token, refresh_token, token_expires_at) VALUES ($1, $2, $3, $4, $5)`;
+        let text1 = `INSERT INTO users (spotify_id, spotify_display_name, access_token, refresh_token, token_expires_at, image_url) VALUES ($1, $2, $3, $4, $5, $6)`;
 
-        let values1 = [req.spotify_id, req.spotify_display_name, req.access_token, req.refresh_token, req.token_expires_at];
+        let values1 = [req.spotify_id, req.spotify_display_name, req.access_token, req.refresh_token, req.token_expires_at, req.image_url];
 
         pool.query(text1, values1, (err, result) => {
           if ( err ) {
@@ -56,19 +71,44 @@ const addUser = (req, res) => {
           }
         })
       } else {
+        if ( existingUser.rows != 0 ) {
+          console.log('UPDATEDDDD!')
+          let text2 = `UPDATE users SET access_token = '${req.access_token}', token_expires_at = '${req.token_expires_at}', refresh_token = '${req.refresh_token}' WHERE spotify_id = '${req.spotify_id}'`;
+          pool.query(text2, (err, result) => {
+            if ( err ) {
+              console.log('error:', err);
+              res.sendStatus(500);
+            } else {
+              res(null, result)
+            }
+          })
+        } else {
         res(null, existingUser)
+        }
       }
     }
   })
 }
 
 const getAccessTokenAndExpiresAt = (req, res) => {
-  let text = `SELECT * FROM users WHERE id = '${req.req}'`
+  let text = `SELECT * FROM users WHERE spotify_id = '${req.spotify_id}'`
   pool.query(text, (err, result) => {
     if (err) {
       res.sendStatus(500);
     } else {
       res(null, result)
+    }
+  })
+}
+
+const getRoomData = (req, res) => {
+  let text = `SELECT * FROM users INNER JOIN rooms USING (spotify_id) WHERE rooms.name = '${req.room}'`;
+
+  pool.query(text, (err, result) => {
+    if ( err ) {
+      res.sendStatus(500);
+    } else {
+      res.send(result.rows);
     }
   })
 }
@@ -84,20 +124,31 @@ const getSongsInRoom = (req, res) => {
   })
 }
 
+const getUserById = (req, res) => {
+  let text = `SELECT * FROM users WHERE users.id = '${req.userId[0].id}'`;
+  pool.query(text, (err, result) => {
+    if ( err ) {
+      console.log(err);
+    } else {
+      // console.log('RESULT.ROWS:', result.rows)
+      res(null, result.rows);
+    }
+  });
+};
+
 const getUserBySpotifyId = (req, res) => {
   let text = `SELECT * FROM users WHERE spotify_id = '${req.spotify_id}'`;
   pool.query(text, (err, result) => {
     if ( err ) {
       res(err);
     } else {
-      console.log('2')
       res(null, result.rows);
     }
   });
 };
 
 const updateAccessTokenAndExpiresAt = (req, res) => {
-  let text = `UPDATE users SET access_token = '${req.access_token}', token_expires_at = '${req.token_expires_at}' WHERE id = ${req.user_id}`;
+  let text = `UPDATE users SET access_token = '${req.access_token}', token_expires_at = '${req.token_expires_at}' WHERE spotify_id = ${req.spotify_id}`;
   pool.query(text, (err, result) => {
     if ( err ) {
       res(err);
@@ -108,9 +159,12 @@ const updateAccessTokenAndExpiresAt = (req, res) => {
 }
 
 module.exports = {
+  addRoom,
   addUser,
   getAccessTokenAndExpiresAt,
+  getRoomData,
   getSongsInRoom,
+  getUserById,
   getUserBySpotifyId,
   updateAccessTokenAndExpiresAt,
 }

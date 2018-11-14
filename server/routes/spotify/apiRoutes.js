@@ -5,7 +5,7 @@ const axios = require('axios');
 const btoa = require('btoa');
 
 const accessToken = async (req, res, next) => {
-  db.getAccessTokenAndExpiresAt({req: 1, user: '123'}, (err, result) => {
+  db.getAccessTokenAndExpiresAt({ spotify_id: req.session.passport.user[0].spotify_id }, (err, result) => {
     if ( err ) {
       console.log(err);
       res.sendStatus(500);
@@ -19,7 +19,7 @@ const accessToken = async (req, res, next) => {
 }
 
 const getNewAccessToken = async (req, res, next) => {
-  db.getAccessTokenAndExpiresAt({req: 1}, async (err, result) => {
+  db.getAccessTokenAndExpiresAt({ spotify_id: req.session.passport.user[0].spotify_id }, async (err, result) => {
     if ( err ) {
       console.log(err);
       res.sendStatus(500);
@@ -61,7 +61,7 @@ const getNewAccessToken = async (req, res, next) => {
 
 const updateAccessToken = async (req, res, next) => {
   if (newAccessToken != undefined) {
-    db.updateAccessTokenAndExpiresAt( { access_token: newAccessToken,token_expires_at: tokenExpiresAt, user_id: 1 }, async (err, result) => {
+    db.updateAccessTokenAndExpiresAt( { access_token: newAccessToken,token_expires_at: tokenExpiresAt, spotify_id: req.session.passport.user[0].spotify_id }, async (err, result) => {
       if ( err ) {
         console.log(err);
         res.sendStatus(500);
@@ -72,6 +72,16 @@ const updateAccessToken = async (req, res, next) => {
 }
 
 router.use(accessToken, getNewAccessToken, updateAccessToken);
+
+router.get('/roomData', (req, res) => {
+  db.getRoomData({ room: roomCode }, (err, result) => {
+    if ( err ) {
+      console.log(err);
+    } else {
+      res.json(result.rows)
+    }
+  })
+})
 
 router.get('/search', (req, res) => {
   const query = req.query.query;
@@ -109,6 +119,54 @@ router.get('/search', (req, res) => {
     params: {
       q: query,
       type: "track",
+      limit: 10
+    }
+  })
+  .then(({data: {tracks}}) => {
+    res.json(tracks);
+  })
+  .catch(err => {
+    console.log(err);
+    res.sendStatus(500);
+  });
+});
+
+router.get('/searchArtists', (req, res) => {
+  const query = req.query.query;
+  // db.getUserByRoomId(req.session.roomId, (err, data) => {
+  //   if (err) {
+  //     console.log('we messed up our getting user:', err)
+  //     res.sendStatus(500)
+  //   } else {
+  //     const [user] = data;
+  //     let accessToken = user.access_token;
+
+  //     axios.get('https://api.spotify.com/v1/search', {
+  //       headers: {
+  //         Authorization: `Bearer ${curAccessToken}`
+  //       },
+  //       params: {
+  //         q: query,
+  //         type: "track",
+  //         limit: 10
+  //       }
+  //     })
+  //     .then(({data: {tracks}}) => {
+  //       res.json(tracks);
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //       res.sendStatus(500);
+  //     });
+  //   }
+  // })
+  axios.get('https://api.spotify.com/v1/search', {
+    headers: {
+      Authorization: `Bearer ${curAccessToken}`
+    },
+    params: {
+      q: query,
+      type: "artist",
       limit: 10
     }
   })
@@ -168,7 +226,6 @@ router.post('/playNextSong', (req, res) => {
 });
 
 router.post('/initPlaylist', (req, res) => {
-  console.log('HERE!')
   fetch(`https://api.spotify.com/v1/users/${spotify_id}/playlists`, {
     headers: {
       'Authorization': `Bearer ${curAccessToken}`

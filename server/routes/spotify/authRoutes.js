@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const passport = require('passport');
+const cookieSession = require('cookie-session');
 
 const scope = [
   'user-read-email',
@@ -32,14 +33,24 @@ router.get('/login', passport.authenticate('spotify', {
 }));
 
 router.get('/spotify/redirect', passport.authenticate('spotify', {failureRedirect: '/login'}), (req, res) => {
-  console.log('HERE!', req)
-  req.session.spotifyId = req.user[0].spotify_id;
-  console.log(req.session);
   res.redirect('/');
 });
 
+// router.post('/login', passport.authenticate('local', {failureRedirect: 'login'}), (req, res) => {
+//   console.log('HEREEE!!')
+//   req.session.key = req.session.passport.user[0].id
+// })
+
 router.get('/isLoggedIn', (req, res) => {
-  res.send(req.session.userId || null);
+
+  let access_token = req.session.passport.user[0].access_token;
+  let refresh_token = req.session.passport.user[0].refresh_token;
+  let spotify_id = req.session.passport.user[0].spotify_id;
+  let userId = req.session.passport.user[0].id;
+  let display_name = req.session.passport.user[0].spotify_display_name;
+  let image_url = req.session.passport.user[0].image_url
+
+  res.send( { access_token: access_token, refresh_token: refresh_token, spotify_id: spotify_id, userId: userId, display_name: display_name, image_url: image_url } || null);
 });
 
 module.exports = router;
