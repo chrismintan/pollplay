@@ -34,7 +34,7 @@ app.use(session({
   saveUninitialized: true,
   cookie: {
     secure: true,
-    httpOnly: true,
+    httpOnly: false,
     maxAge: 1000 * 60 * 60 * 24, //Set for one day
   }
 }));
@@ -78,16 +78,14 @@ const io = require('socket.io')(server);
 io.sockets.on('connection', (socket) => {
   console.log('Connected!')
 
+  // Clunky room implementation but works!
   socket.on('room', (room, data) => {
     socket.join(room);
-    let room1 = 'abc123'
-    io.sockets.in(room1).emit('message', 'what is going on, party people?');
-    socket.on('abc123', function(data) {
-      io.sockets.emit('message', data)
+    io.sockets.in(room).emit('Another Voter!');
+    socket.on(room, function(data) {
+      io.in(room).emit('message', data)
     })
   })
-
-
 
 })
 

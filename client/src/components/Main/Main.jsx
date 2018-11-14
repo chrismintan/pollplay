@@ -12,17 +12,26 @@ class Main extends React.Component {
   constructor() {
     super();
     this.state = {
-      currentSong: null,
       songBank: [],
       roomID: null,
       access_token: null,
       spotify_id: null,
+      artistName: '',
+      albumImageURL: '',
+      albumName: '',
+      albumURI: '',
+      visibleAlbumURI: '',
+      nextVectorData: null,
+      trackDuration: 180000,
+      trackURI: '',
+      trackPosition: 0,
+      trackPlaying: false,
+      trackName: '',
     };
 
     this.updateSongBank = this.updateSongBank.bind(this);
     this.dropDownSongs = this.dropDownSongs.bind(this);
     this.getCurrentSong = this.getCurrentSong.bind(this);
-
     this.nextSong = this.nextSong.bind(this);
 
     // For testing functions
@@ -42,53 +51,118 @@ class Main extends React.Component {
     console.log('this.state.songBank', this.state.songBank)
   }
 
-  componentDidMount() {
-    this.socket.on('message', function(data) {
-      console.log('Incoming message:', data)
-    })
-    let room='abc123'
-    this.socket.emit('room', room)
+  async componentDidMount() {
+    var playBackData;
     const {roomId} = this.props.match.params;
-    axios.get(`/spotify/rooms/${roomId}`, {
+
+    let reactThis = this
+
+    // Socket
+    this.socket.on('message', function(data) {
+      let albumURI = data.item.album.uri;
+      let albumImageURL = data.item.album.images[0].url;
+      let trackName = data.item.name;
+      let albumName = data.item.album.name;
+      let artistName = data.item.artists[0].name;
+      let trackPosition = data.progress_ms;
+      let trackDuration = data.item.duration_ms;
+      let trackPlaying = data.is_playing
+      reactThis.setState({
+        albumURI: data.item.album.uri,
+        albumImageURL: data.item.album.images[0].url,
+        trackName: data.item.name,
+        albumName: data.item.album.name,
+        artistName: data.item.artists[0].name,
+        trackPosition: data.progress_ms,
+        trackDuration: data.item.duration_ms,
+        trackPlaying: data.is_playing,
+      })
+      console.log(reactThis.state)
+    })
+    let room = roomId;
+    this.socket.emit('room', room)
+    // Socket
+
+    await axios.get(`/spotify/rooms/${roomId}`, {
       params: {
         query: roomId
       }
     })
     .then(({data}) => {
-      console.log(data);
       this.setState({
         spotify_id: data[0].spotify_id,
         roomID: data[0].name,
         access_token: data[0].access_token,
       })
-      console.log(this.state)
     })
     .catch(err => {
       console.log(err);
     });
 
+    await axios.get('/auth/isLoggedIn')
+    .then(({data}) => {
+      if ( data.spotify_id == this.state.spotify_id ) {
+        console.log('Host is in the building!')
 
+        // Socket emitting (only host)
+        let reactThis = this;
+        setInterval(function() {
+          var url = `https://api.spotify.com/v1/me/player`
+          fetch(url, {
+            method: `GET`,
+            headers: {
+              Authorization: `Bearer ${reactThis.state.access_token}`
+            }
+          })
+          .then((response) => response.json())
+          .then((responseJson) => {
 
-    let reactThis = this;
+            // player state
+            var artistName = '';
+            var albumImageURL = '';
+            var albumName = '';
+            var albumURI = '';
+            var visibleAlbumURI = '';
+            var nextVectorData = null;
+            var trackDuration = 180000;
+            var trackURI = '';
+            var trackPosition = 0;
+            var trackPlaying = false;
+            var trackName = '';
 
-    // setInterval(function() {
-    // let data1 = 'testing'
-    //   reactThis.socket.emit('player move', new Date)
-    // }, 3000)
+            playBackData = responseJson;
+
+            let data = responseJson;
+
+            if (data.item) {
+              albumURI = data.item.album.uri;
+              albumImageURL = data.item.album.images[0].url;
+              trackName = data.item.name;
+              albumName = data.item.album.name;
+              artistName = data.item.artists[0].name;
+              trackPosition = data.progress_ms;
+              trackDuration = data.item.duration_ms;
+              trackPlaying = data.is_playing;
+              trackURI = data.item.uri;
+            }
+          })
+          reactThis.socket.emit(roomId, playBackData)
+        }, 3000)
+        // Socket emitting (only host)
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
+    console.log('done!')
   }
 
   testing() {
-    // this.socket.on('news_by_server', function(data){
-    //   console.log(data)
-    // })
-    let room = 'abc123'
 
-    // console.log(this.state)
+    const {roomId} = this.props.match.params;
 
-    let data = 'TEST!'
+    this.socket.emit(roomId, { data: 'testObj' })
 
-
-    this.socket.emit('abc123', { data: 'testObj' })
   }
 
   // testing() {
@@ -162,7 +236,7 @@ class Main extends React.Component {
   }
 
   render() {
-    let currentSong = this.state.currentSong ? <CurrentSong image={this.state.currentSong[2]} title={this.state.currentSong[0]} artist={this.state.currentSong[1]} /> : "";
+    let currentSong = this.state.trackName ? <CurrentSong {...this.state} /> : "";
     return (
       <div>
         <div className='mainbody'>
