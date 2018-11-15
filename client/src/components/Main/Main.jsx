@@ -7,6 +7,17 @@ import Song from './Song.jsx';
 import CurrentSong from './NowPlaying/CurrentSong.jsx';
 import io from 'socket.io-client';
 import styles from './style.scss';
+import Grid from '@material-ui/core/Grid';
+import { withStyles } from '@material-ui/core/styles';
+
+const styling = theme => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    textAlign: 'center',
+  },
+});
 
 class Main extends React.Component {
   constructor() {
@@ -241,27 +252,51 @@ class Main extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     let {roomId} = this.props.match.params;
 
     let currentSong = (window.location.href.includes(roomId)) ? <CurrentSong {...this.state} /> : "";
     return (
       <div>
         <div className='mainbody'>
-          <div>
-            <h1>Project 4!</h1>
-            {currentSong}
-            <button onClick={this.getCurrentSong}>Get Current Song</button>
-            <button onClick={this.nextSong}>Next Song</button>
-            <button onClick={this.testing}>TEST BUTTON!</button>
+
+          <div className={classes.roots}>
+            <Grid container spacing={24}>
+              <Grid item xs spacing={24}>
+                <div className={classes.paper}>
+                  <h1>Project 4!</h1>
+                  {currentSong}
+                  <button onClick={this.getCurrentSong}>Get Current Song</button>
+                  <button onClick={this.nextSong}>Next Song</button>
+                  <button onClick={this.testing}>TEST BUTTON!</button>
+                </div>
+              </Grid>
+
+
+              <Grid item xs spacing={24}>
+                <div className={classes.paper}>
+                  <SearchBar updateSongBank={this.updateSongBank} access_token={this.state.access_token} />
+                </div>
+              </Grid>
+
+
+
+              <Grid item xs spacing={24}>
+                <div className={classes.paper}>
+                  <SearchBar updateSongBank={this.updateSongBank} access_token={this.state.access_token} />
+                </div>
+              </Grid>
+            </Grid>
           </div>
-          <SearchBar updateSongBank={this.updateSongBank} access_token={this.state.access_token} />
+
         </div>
       </div>
     )
   }
 }
 
-export default Main;
+export default withStyles(styling)(Main);
 
 
 
