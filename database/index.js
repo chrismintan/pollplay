@@ -54,7 +54,7 @@ const addUser = (req, res) => {
   pool.query(text, (err, existingUser) => {
     if ( err ) {
       console.log('error: ', err)
-      res(null, existingUser);
+      res.sendStatus(500);
     } else {
       if ( existingUser.rows == 0 ) {
         console.log(req)
