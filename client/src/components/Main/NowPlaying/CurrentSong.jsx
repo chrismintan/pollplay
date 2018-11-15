@@ -32,7 +32,17 @@ class CurrentSong extends React.Component {
   }
 
   componentDidMount() {
-    let path = window.location.href;
+    console.log('CURRENTSONG MOUNTED!')
+
+    // let path = window.location.href;
+
+    // let doc = document.createElement('div');
+
+    // doc.setAttribute('id', 'inroom')
+
+    // doc.textContent = 'yes';
+
+    // document.getElementById('currentSong').appendChild(doc)
 
     const cookies = new Cookies();
 
@@ -84,11 +94,10 @@ class CurrentSong extends React.Component {
 
   render() {
     return (
-      <div className='current-song'>
+      <div className='current-song' id='currentSong'>
           <canvas id="canvas"></canvas>
           <div id="toast" className="toast"><span id="text"></span><span id="text2"></span></div>
           <div className="trackposition" id="trackposition"><div className="fill" id="trackpositionfill"></div></div>
-          <script src="https://raw.githubusercontent.com/chrismintan/pollplay/master/client/src/components/Main/NowPlaying/script2.js"></script>
       </div>
     )
   }

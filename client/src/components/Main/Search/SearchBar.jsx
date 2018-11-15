@@ -37,8 +37,8 @@ const styles = {
 };
 
 class SearchBar extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       input: '',
       spotifyResults: [],
@@ -50,6 +50,8 @@ class SearchBar extends React.Component {
   }
 
   handleInputChange(e) {
+    console.log('input change')
+    console.log(this.props)
     let input = e.target.value;
     this.setState({
       input: input,
@@ -58,34 +60,44 @@ class SearchBar extends React.Component {
       this.handleClick();
     };
 
-    if ( input.length == 0 ) {
+    if ( input.length < 2 ) {
       this.setState({
         spotifyResults: [],
       })
     }
   }
 
-  handleClick(e) {
-    this.props.updateSongBank(this.state.input)
+  handleClick(event) {
 
-    axios.get('/spotify/search', {
+    console.log('123')
+
+    let reactThis = this
+
+    console.log(this.props.access_token)
+
+    axios.get('/api/search', {
       params: {
-        query: this.state.input
+        query: reactThis.state.input,
+        token: reactThis.props.access_token
       }
     })
     .then(({data: {items}}) => {
+
+      console.log('DATA:', data)
+      console.log('items', items)
 
       // Artist = items[0].artists[0].name
       // Track = items[0].name
       // Album = items[0].album.name
       // Album Image = items[0].album.images[2].url
 
-      this.setState({
+      reactThis.setState({
         spotifyResults: items,
       });
       }).catch(function(error){
         console.log(error)
     })
+    this.props.updateSongBank(this.state.input)
   }
 
   selectSong() {
@@ -98,6 +110,11 @@ class SearchBar extends React.Component {
       <div>
         <form>
         <TextField
+          onKeyPress={(event) => {
+            if ( event.key == 'Enter' ) {
+              event.preventDefault();
+            }
+          }}
           value={this.state.input}
           onChange={this.handleInputChange}
           InputProps={{

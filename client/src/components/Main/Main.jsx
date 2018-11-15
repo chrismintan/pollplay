@@ -57,8 +57,10 @@ class Main extends React.Component {
 
     let reactThis = this
 
-    // Socket
+    // Socket listener
     this.socket.on('message', function(data) {
+      console.log('DATAAAA!', data)
+      let access_token = data.access_token
       let albumURI = data.item.album.uri;
       let albumImageURL = data.item.album.images[0].url;
       let trackName = data.item.name;
@@ -68,6 +70,7 @@ class Main extends React.Component {
       let trackDuration = data.item.duration_ms;
       let trackPlaying = data.is_playing
       reactThis.setState({
+        access_token: access_token,
         albumURI: data.item.album.uri,
         albumImageURL: data.item.album.images[0].url,
         trackName: data.item.name,
@@ -80,7 +83,7 @@ class Main extends React.Component {
     })
     let room = roomId;
     this.socket.emit('room', room)
-    // Socket
+    // Socket listener
 
     await axios.get(`/spotify/rooms/${roomId}`, {
       params: {
@@ -100,7 +103,7 @@ class Main extends React.Component {
 
     await axios.get('/auth/isLoggedIn')
     .then(({data}) => {
-      if ( data.spotify_id == this.state.spotify_id ) {
+      if ( data.spotify_id == reactThis.state.spotify_id ) {
         console.log('Host is in the building!')
 
         // Socket emitting (only host)
@@ -131,6 +134,8 @@ class Main extends React.Component {
 
             playBackData = responseJson;
 
+            playBackData.access_token = reactThis.state.access_token
+
             let data = responseJson;
 
             if (data.item) {
@@ -148,12 +153,13 @@ class Main extends React.Component {
           reactThis.socket.emit(roomId, playBackData)
         }, 3000)
         // Socket emitting (only host)
+      } else {
+        console.log('Voter has entered!')
       }
     })
     .catch(err => {
       console.log(err);
     });
-    console.log('done!')
   }
 
   testing() {
@@ -235,18 +241,20 @@ class Main extends React.Component {
   }
 
   render() {
-    let currentSong = this.state.roomID ? <CurrentSong {...this.state} /> : "";
+    let {roomId} = this.props.match.params;
+
+    let currentSong = (window.location.href.includes(roomId)) ? <CurrentSong {...this.state} /> : "";
     return (
       <div>
         <div className='mainbody'>
-          <h1>Project 4!</h1>
-          <SearchBar updateSongBank={this.updateSongBank} />
           <div>
+            <h1>Project 4!</h1>
             {currentSong}
             <button onClick={this.getCurrentSong}>Get Current Song</button>
             <button onClick={this.nextSong}>Next Song</button>
             <button onClick={this.testing}>TEST BUTTON!</button>
           </div>
+          <SearchBar updateSongBank={this.updateSongBank} access_token={this.state.access_token} />
         </div>
       </div>
     )

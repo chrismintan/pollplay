@@ -84,37 +84,11 @@ router.get('/rooms/:roomId', (req, res) => {
 })
 
 router.get('/search', (req, res) => {
+  const token = req.query.token
   const query = req.query.query;
-  // db.getUserByRoomId(req.session.roomId, (err, data) => {
-  //   if (err) {
-  //     console.log('we messed up our getting user:', err)
-  //     res.sendStatus(500)
-  //   } else {
-  //     const [user] = data;
-  //     let accessToken = user.access_token;
-
-  //     axios.get('https://api.spotify.com/v1/search', {
-  //       headers: {
-  //         Authorization: `Bearer ${curAccessToken}`
-  //       },
-  //       params: {
-  //         q: query,
-  //         type: "track",
-  //         limit: 10
-  //       }
-  //     })
-  //     .then(({data: {tracks}}) => {
-  //       res.json(tracks);
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //       res.sendStatus(500);
-  //     });
-  //   }
-  // })
   axios.get('https://api.spotify.com/v1/search', {
     headers: {
-      Authorization: `Bearer ${curAccessToken}`
+      Authorization: `Bearer ${token}`
     },
     params: {
       q: query,
@@ -166,7 +140,7 @@ router.get('/searchArtists', (req, res) => {
     },
     params: {
       q: query,
-      type: "artist",
+      type: "track",
       limit: 10
     }
   })

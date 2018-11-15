@@ -43,14 +43,22 @@ router.get('/spotify/redirect', passport.authenticate('spotify', {failureRedirec
 
 router.get('/isLoggedIn', (req, res) => {
 
-  let access_token = req.session.passport.user[0].access_token;
-  let refresh_token = req.session.passport.user[0].refresh_token;
-  let spotify_id = req.session.passport.user[0].spotify_id;
-  let userId = req.session.passport.user[0].id;
-  let display_name = req.session.passport.user[0].spotify_display_name;
-  let image_url = req.session.passport.user[0].image_url
+  if ( req.session.passport.user[0].access_token ) {
 
-  res.send( { access_token: access_token, refresh_token: refresh_token, spotify_id: spotify_id, userId: userId, display_name: display_name, image_url: image_url } || null);
+    let access_token = req.session.passport.user[0].access_token;
+    let refresh_token = req.session.passport.user[0].refresh_token;
+    let spotify_id = req.session.passport.user[0].spotify_id;
+    let userId = req.session.passport.user[0].id;
+    let display_name = req.session.passport.user[0].spotify_display_name;
+    let image_url = req.session.passport.user[0].image_url
+
+    res.send( { access_token: access_token, refresh_token: refresh_token, spotify_id: spotify_id, userId: userId, display_name: display_name, image_url: image_url } || null);
+
+  } else {
+    res.send( spotify_id == null )
+  }
+
+
 });
 
 module.exports = router;

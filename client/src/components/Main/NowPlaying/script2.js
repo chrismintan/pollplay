@@ -1,3 +1,5 @@
+
+
 window.onload = function() {
 // webgl renderer
 var gl;
@@ -59,12 +61,12 @@ function updateStatus() {
     toast(artistName, trackName);
     setTimeout(function(){
       document.getElementById('toast').className = 'toast visible';
-    }, 5000)
+    }, 1000)
   }
 
 }
 
-setInterval(function(){updateStatus()}, 3000);
+setInterval(function(){updateStatus()}, 2000);
 
 // --------------------------------------------------------------------------------------
 // Some polyfills
@@ -624,6 +626,7 @@ setTimeout(function(){
 
 }
 
+console.log('DONE!')
 
 
 

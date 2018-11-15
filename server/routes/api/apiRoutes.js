@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../../database/index');
 const cookieSession = require('cookie-session');
+const axios = require('axios');
 
 // Legacy route --
 // router.get('/isLoggedIn', (req, res) => {
@@ -17,6 +18,28 @@ router.post('/createRoom', (req, res) => {
       console.log('room created!', result.rows[0].name)
       res.json(result.rows[0].name);
     }
+  });
+});
+
+router.get('/search', (req, res) => {
+  const token = req.query.token
+  const query = req.query.query;
+  axios.get('https://api.spotify.com/v1/search', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    params: {
+      q: query,
+      type: "track",
+      limit: 10
+    }
+  })
+  .then(({data: {tracks}}) => {
+    res.json(tracks);
+  })
+  .catch(err => {
+    console.log(err);
+    res.sendStatus(500);
   });
 });
 
