@@ -1,5 +1,4 @@
 import React from 'react';
-import script1 from './script1.js';
 import script2 from './script2.js';
 import Cookies from 'universal-cookie';
 import styles from './style.scss'
@@ -81,7 +80,7 @@ class CurrentSong extends React.Component {
           <canvas id="canvas"></canvas>
           <div id="toast" className="toast"><span id="text"></span><span id="text2"></span></div>
           <div className="trackposition" id="trackposition"><div className="fill" id="trackpositionfill"></div></div>
-        <script src={script2}></script>
+
       </div>
     )
   }

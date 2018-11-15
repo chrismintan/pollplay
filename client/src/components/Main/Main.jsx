@@ -77,7 +77,6 @@ class Main extends React.Component {
         trackDuration: data.item.duration_ms,
         trackPlaying: data.is_playing,
       })
-      console.log(reactThis.state)
     })
     let room = roomId;
     this.socket.emit('room', room)
@@ -236,7 +235,7 @@ class Main extends React.Component {
   }
 
   render() {
-    let currentSong = this.state.trackName ? <CurrentSong {...this.state} /> : "";
+    let currentSong = this.state.roomID ? <CurrentSong {...this.state} /> : "";
     return (
       <div>
         <div className='mainbody'>
