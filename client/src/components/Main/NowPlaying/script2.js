@@ -1,5 +1,3 @@
-
-
 window.onload = function() {
 // webgl renderer
 var gl;
@@ -620,7 +618,9 @@ function initAnimation() {
   tick();
 }
 
+setTimeout(function(){
   initAnimation();
+}, 2000)
 
 }
 

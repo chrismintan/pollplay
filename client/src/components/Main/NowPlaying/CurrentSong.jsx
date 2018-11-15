@@ -1,5 +1,5 @@
 import React from 'react';
-import script2 from './script2.js';
+// import script2 from './script2.js';
 import Cookies from 'universal-cookie';
 import styles from './style.scss'
 
@@ -71,6 +71,14 @@ class CurrentSong extends React.Component {
       cookies.set('trackURI', reactThis.props.trackURI, {path: '/', maxAge: 5})
 
     }, 3000)
+
+    // const script = document.createElement("script");
+
+    // script.src = "https://raw.githubusercontent.com/chrismintan/pollplay/master/client/src/components/Main/NowPlaying/script2.js";
+
+    // script.async = true
+
+    // document.body.appendChild(script);
   }
 
 
@@ -80,7 +88,7 @@ class CurrentSong extends React.Component {
           <canvas id="canvas"></canvas>
           <div id="toast" className="toast"><span id="text"></span><span id="text2"></span></div>
           <div className="trackposition" id="trackposition"><div className="fill" id="trackpositionfill"></div></div>
-
+          <script src="https://raw.githubusercontent.com/chrismintan/pollplay/master/client/src/components/Main/NowPlaying/script2.js"></script>
       </div>
     )
   }
