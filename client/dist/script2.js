@@ -1,7 +1,7 @@
 
-window.onload = function() {
+window.onload = function(){
 
-  if ( document.getElementById('canvas') != null ) {
+  if ( window.location.href.includes('rooms') ) {
 
     console.log('Animation Init!')
 
@@ -59,6 +59,7 @@ window.onload = function() {
 
       var w = (trackPosition * 100) / trackDuration;
       w = Math.max(Math.min(100, w), 0);
+      document.getElementById('trackposition').style.display = 'block';
       document.getElementById('trackpositionfill').style.width = w + '%';
 
       if ( artistName != '' && trackName != undefined ){
@@ -626,9 +627,9 @@ window.onload = function() {
 
   initAnimation();
 
+
   }
 }
-
 
 
 

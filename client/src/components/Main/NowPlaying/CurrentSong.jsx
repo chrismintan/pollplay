@@ -1,11 +1,13 @@
 import React from 'react';
-// import script2 from './script2.js';
 import Cookies from 'universal-cookie';
 import styles from './style.scss'
 
 class CurrentSong extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      init: false,
+    }
     const cookies = new Cookies();
 
     cookies.remove('albumURI')
@@ -29,6 +31,10 @@ class CurrentSong extends React.Component {
     cookies.remove('trackDuration')
     cookies.remove('trackPlaying')
     cookies.remove('trackURI')
+  }
+
+  componentWillMount() {
+
   }
 
   componentDidMount() {

@@ -174,10 +174,8 @@ class Main extends React.Component {
   }
 
   testing() {
-
-    const {roomId} = this.props.match.params;
-
-    this.socket.emit(roomId, { data: 'testObj' })
+    console.log('here!')
+    axios.put('/spotify/testing');
 
   }
 

@@ -13,6 +13,7 @@ const styles = {
     color: '#FEFEFEFF',
     borderBottom: '1px solid white',
     marginBottom: 5,
+    width: '100%',
   },
 
   'input-label': {
@@ -40,36 +41,40 @@ class SearchBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      input: '',
+      trackInput: '',
+      artistInput: '',
       spotifyResults: [],
     };
 
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleArtistInputChange = this.handleArtistInputChange.bind(this);
+    this.handleTrackInputChange = this.handleTrackInputChange.bind(this);
+    this.handleTrackSearch = this.handleTrackSearch.bind(this);
+    this.handleArtistSearch = this.handleArtistSearch.bind(this);
     this.selectSong = this.selectSong.bind(this);
   }
 
-  handleInputChange(e) {
-    console.log('input change')
-    console.log(this.props)
+  handleTrackInputChange(e) {
+    console.log('changing')
     let input = e.target.value;
     this.setState({
-      input: input,
+      trackInput: input,
     })
     if ( input.length > 3 ) {
-      this.handleClick();
+      this.handleTrackSearch();
     };
-
-    if ( input.length < 2 ) {
-      this.setState({
-        spotifyResults: [],
-      })
-    }
   }
 
-  handleClick(event) {
+  handleArtistInputChange(e) {
+    let input = e.target.value;
+    this.setState({
+      artistInput: input,
+    })
+    if ( input.length > 3 ) {
+      this.handleArtistSearch();
+    };
+  }
 
-    console.log('123')
+  handleTrackSearch(event) {
 
     let reactThis = this
 
@@ -77,7 +82,41 @@ class SearchBar extends React.Component {
 
     axios.get('/api/search', {
       params: {
-        query: reactThis.state.input,
+        query: reactThis.state.trackInput,
+        token: reactThis.props.access_token
+      }
+    })
+    .then(({data: {items}}) => {
+
+      console.log('DATA:', data)
+      console.log('items', items)
+
+      // Artist = items[0].artists[0].name
+      // Track = items[0].name
+      // Album = items[0].album.name
+      // Album Image = items[0].album.images[2].url
+      // trackURI = items[0].uri <-- for adding to playlist adding
+
+      if ( items.length != 0 ) {
+        reactThis.setState({
+          spotifyResults: items,
+        });
+      }
+
+      }).catch(function(error){
+        console.log(error)
+    })
+  }
+
+  handleArtistSearch(event) {
+
+    let reactThis = this
+
+    console.log(this.props.access_token)
+
+    axios.get('/api/searchArtist', {
+      params: {
+        query: reactThis.state.artistInput,
         token: reactThis.props.access_token
       }
     })
@@ -91,13 +130,16 @@ class SearchBar extends React.Component {
       // Album = items[0].album.name
       // Album Image = items[0].album.images[2].url
 
-      reactThis.setState({
-        spotifyResults: items,
-      });
+      if ( items.length != 0 ) {
+        reactThis.setState({
+          spotifyResults: items,
+        });
+      }
+
       }).catch(function(error){
         console.log(error)
     })
-    this.props.updateSongBank(this.state.input)
+    // this.props.updateSongBank(this.state.input)
   }
 
   selectSong() {
@@ -108,30 +150,62 @@ class SearchBar extends React.Component {
     const { classes } = this.props;
     return (
       <div>
-        <form>
-        <TextField
-          onKeyPress={(event) => {
-            if ( event.key == 'Enter' ) {
-              event.preventDefault();
-            }
-          }}
-          value={this.state.input}
-          onChange={this.handleInputChange}
-          InputProps={{
-            disableUnderline: true,
-            classes: {
-              input: classes.textField,
-            },
-          }}
-          label='Type to search...'
-          InputLabelProps={{
-            style: {
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              width: '100%',
-              color: '#E6E6E5FF'
-            } }} />
+        <form style={{ width: '45%', display: 'inline-block', marginRight: 5}}>
+          <TextField
+            fullWidth
+            onKeyPress={(event) => {
+              if ( event.key == 'Enter' ) {
+                event.preventDefault();
+                this.handleArtistSearch();
+              }
+            }}
+            style={{ width: '100%', display: 'inline-block'}}
+            value={this.state.artistInput}
+            onChange={this.handleArtistInputChange}
+            InputProps={{
+              disableUnderline: true,
+              classes: {
+                input: classes.textField,
+              },
+            }}
+            label='Search by Artist...'
+            InputLabelProps={{
+              style: {
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                width: '100%',
+                color: '#E6E6E5FF'
+              } }} />
+        </form>
+
+        <form style={{ width: '45%', display: 'inline-block', marginLeft: 5}}>
+          <TextField
+            fullWidth
+            onKeyPress={(event) => {
+              if ( event.key == 'Enter' ) {
+                event.preventDefault();
+                this.handleTrackSearch();
+              }
+            }}
+            value={this.state.trackInput}
+            onChange={this.handleTrackInputChange}
+            InputProps={{
+              disableUnderline: true,
+              classes: {
+                input: classes.textField,
+              },
+            }}
+            style={{ width: '100%', display: 'inline-block'}}
+            label='Search by Track Name...'
+            InputLabelProps={{
+              style: {
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                width: '100%',
+                color: '#E6E6E5FF'
+              } }} />
         </form>
         <DropDownSongList spotifyResults={this.state.spotifyResults} selectSong={this.selectSong} />
       </div>

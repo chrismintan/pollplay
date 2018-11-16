@@ -31,7 +31,30 @@ router.get('/search', (req, res) => {
     params: {
       q: query,
       type: "track",
-      limit: 10
+      limit: 20
+    }
+  })
+  .then(({data: {tracks}}) => {
+    res.json(tracks);
+  })
+  .catch(err => {
+    console.log(err);
+    res.sendStatus(500);
+  });
+});
+
+router.get('/searchArtist', (req, res) => {
+  const token = req.query.token
+  const query = req.query.query;
+  console.log(query)
+  axios.get('https://api.spotify.com/v1/search', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+    params: {
+      q: `artist: "${query}"`,
+      type: "track",
+      limit: 20
     }
   })
   .then(({data: {tracks}}) => {

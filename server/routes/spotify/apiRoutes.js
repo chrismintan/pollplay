@@ -199,6 +199,29 @@ router.post('/playNextSong', (req, res) => {
   }
 });
 
+router.put('/testing', (req, res) => {
+  console.log('1')
+  const options = {
+    method: 'PUT',
+    url: 'https://api.spotify.com/v1/me/player/play',
+    headers: {
+      Authorization: `Bearer ${curAccessToken}`
+    },
+    params: {
+      "uris": ["spotify:track:746bHsY27aWTMYpoxqECOm", "spotify:track:746bHsY27aWTMYpoxqECOm"],
+      "offset": {"position": 0}
+    }
+  };
+  console.log('2')
+  try {
+    axios(options);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+  console.log('3')
+})
+
 router.post('/initPlaylist', (req, res) => {
   fetch(`https://api.spotify.com/v1/users/${spotify_id}/playlists`, {
     headers: {
