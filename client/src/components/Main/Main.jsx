@@ -335,7 +335,7 @@ class Main extends React.Component {
           <div className={classes.roots}>
             <Grid container spacing={24}>
 
-              <Grid item xs spacing={24}>
+              <Grid item xs={6} spacing={24}>
                 <div className={classes.paper}>
                   <h1>Project 4!</h1>
                   <CurrentSong {...this.state} />
@@ -344,14 +344,14 @@ class Main extends React.Component {
               </Grid>
 
 
-              <Grid item xs spacing={24}>
+              <Grid item xs={3} spacing={24}>
                 <div className={classes.paper}>
                   <SongList songBank={this.state.songBank} upVoteSong={this.upVoteSong} />
                 </div>
               </Grid>
 
 
-              <Grid item xs spacing={24}>
+              <Grid item xs={3} spacing={24}>
                 <div className={classes.paper}>
                   <SearchBar addSong={this.addSong} songBank={this.state.songBank} access_token={this.state.access_token} />
                 </div>

@@ -17,6 +17,7 @@ const styles = {
     background: '#383838',
     '&:hover': {
       background: 'rgb(33, 33, 33)',
+      cursor: 'pointer',
     },
   },
   details: {
