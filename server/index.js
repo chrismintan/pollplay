@@ -81,7 +81,7 @@ io.sockets.on('connection', (socket) => {
   // Clunky room implementation but works!
   socket.on('room', (room, data) => {
     socket.join(room);
-    io.sockets.in(room).emit('Another Voter!');
+
     socket.on(room, function(data) {
       io.in(room).emit('message', data)
     })

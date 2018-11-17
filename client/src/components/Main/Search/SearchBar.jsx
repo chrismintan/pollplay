@@ -6,7 +6,8 @@ import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import { createMuiTheme } from '@material-ui/core/styles';
-import styling from './styling.scss';
+// import IconButton from '@material-ui/core/IconButton';
+// import ActionSearchIcon from '@material-ui/icons/search';
 
 const styles = {
   textField: {
@@ -50,11 +51,9 @@ class SearchBar extends React.Component {
     this.handleTrackInputChange = this.handleTrackInputChange.bind(this);
     this.handleTrackSearch = this.handleTrackSearch.bind(this);
     this.handleArtistSearch = this.handleArtistSearch.bind(this);
-    this.selectSong = this.selectSong.bind(this);
   }
 
   handleTrackInputChange(e) {
-    console.log('changing')
     let input = e.target.value;
     this.setState({
       trackInput: input,
@@ -78,8 +77,6 @@ class SearchBar extends React.Component {
 
     let reactThis = this
 
-    console.log(this.props.access_token)
-
     axios.get('/api/search', {
       params: {
         query: reactThis.state.trackInput,
@@ -87,15 +84,6 @@ class SearchBar extends React.Component {
       }
     })
     .then(({data: {items}}) => {
-
-      console.log('DATA:', data)
-      console.log('items', items)
-
-      // Artist = items[0].artists[0].name
-      // Track = items[0].name
-      // Album = items[0].album.name
-      // Album Image = items[0].album.images[2].url
-      // trackURI = items[0].uri <-- for adding to playlist adding
 
       if ( items.length != 0 ) {
         reactThis.setState({
@@ -112,8 +100,6 @@ class SearchBar extends React.Component {
 
     let reactThis = this
 
-    console.log(this.props.access_token)
-
     axios.get('/api/searchArtist', {
       params: {
         query: reactThis.state.artistInput,
@@ -121,14 +107,6 @@ class SearchBar extends React.Component {
       }
     })
     .then(({data: {items}}) => {
-
-      console.log('DATA:', data)
-      console.log('items', items)
-
-      // Artist = items[0].artists[0].name
-      // Track = items[0].name
-      // Album = items[0].album.name
-      // Album Image = items[0].album.images[2].url
 
       if ( items.length != 0 ) {
         reactThis.setState({
@@ -140,10 +118,6 @@ class SearchBar extends React.Component {
         console.log(error)
     })
     // this.props.updateSongBank(this.state.input)
-  }
-
-  selectSong() {
-    // Function to 'POST' song to databse
   }
 
   render() {
@@ -205,9 +179,10 @@ class SearchBar extends React.Component {
                 overflow: 'hidden',
                 width: '100%',
                 color: '#E6E6E5FF'
-              } }} />
+              } }}
+              />
         </form>
-        <DropDownSongList spotifyResults={this.state.spotifyResults} selectSong={this.selectSong} />
+        <DropDownSongList spotifyResults={this.state.spotifyResults} addSong={this.props.addSong} songBank={this.props.songBank} />
       </div>
     )
   }

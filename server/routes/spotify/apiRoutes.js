@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../../../database/index');
 const axios = require('axios');
 const btoa = require('btoa');
+const fetch = require('node-fetch');
 
 const accessToken = async (req, res, next) => {
   db.getAccessTokenAndExpiresAt({ spotify_id: req.session.passport.user[0].spotify_id }, (err, result) => {
@@ -73,6 +74,7 @@ const updateAccessToken = async (req, res, next) => {
 
 router.use(accessToken, getNewAccessToken, updateAccessToken);
 
+/* Switched to other route so non hosts can instantly search
 router.get('/rooms/:roomId', (req, res) => {
   db.getRoomData({ room: req.query.query }, (err, result) => {
     if ( err ) {
@@ -82,6 +84,7 @@ router.get('/rooms/:roomId', (req, res) => {
     }
   })
 })
+*/
 
 router.get('/search', (req, res) => {
   const token = req.query.token
@@ -199,27 +202,62 @@ router.post('/playNextSong', (req, res) => {
   }
 });
 
-router.put('/testing', (req, res) => {
-  console.log('1')
+router.put('/playNext', (req, res) => {
+  let nextTrack = req.body.nextTrack
+  console.log(nextTrack)
   const options = {
     method: 'PUT',
     url: 'https://api.spotify.com/v1/me/player/play',
     headers: {
-      Authorization: `Bearer ${curAccessToken}`
+      Authorization: `Bearer ${curAccessToken}`,
+      Accept: "application/json",
+      'Content-Type': "application/json"
     },
-    params: {
-      "uris": ["spotify:track:746bHsY27aWTMYpoxqECOm", "spotify:track:746bHsY27aWTMYpoxqECOm"],
-      "offset": {"position": 0}
+    data: {
+      "uris": [nextTrack],
+      "offset": {
+        "position": 0
+      },
+      "position_ms": 0
     }
   };
-  console.log('2')
   try {
     axios(options);
+    res.end()
   } catch (err) {
+    console.log('hererere')
     console.log(err);
     res.sendStatus(500);
   }
-  console.log('3')
+})
+
+router.put('/testing', (req, res) => {
+  let nextTrack = req.body.nextTrack
+  console.log(nextTrack)
+  const options = {
+    method: 'PUT',
+    url: 'https://api.spotify.com/v1/me/player/play',
+    headers: {
+      Authorization: `Bearer ${curAccessToken}`,
+      Accept: "application/json",
+      'Content-Type': "application/json"
+    },
+    data: {
+      "uris": [nextTrack],
+      "offset": {
+        "position": 0
+      },
+      "position_ms": 0
+    }
+  };
+  try {
+    axios(options);
+    res.end()
+  } catch (err) {
+    console.log('hererere')
+    console.log(err);
+    res.sendStatus(500);
+  }
 })
 
 router.post('/initPlaylist', (req, res) => {

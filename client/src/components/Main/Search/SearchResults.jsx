@@ -7,7 +7,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 
-const styles = theme => ({
+const styles = {
   card: {
     display: 'flex',
     height: 'auto',
@@ -38,34 +38,65 @@ const styles = theme => ({
   title: {
     fontSize: 17,
     color: 'white',
-  },
-});
-
-function MediaControlCard(props) {
-  const { classes, theme } = props;
-
-  return (
-    <Card className={classes.card}>
-      <CardMedia  className={classes.cover}
-                  image={props.image}
-      />
-      <div className={classes.details}>
-        <CardContent className={classes.content}>
-          <Typography className={classes.title}>
-            {props.title}
-          </Typography>
-          <Typography className={classes.artist}>
-            {props.artist}
-          </Typography>
-        </CardContent>
-      </div>
-    </Card>
-  );
-}
-
-MediaControlCard.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
+  }
 };
 
-export default withStyles(styles, { withTheme: true })(MediaControlCard);
+class SearchResults extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      disabled: false,
+    }
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(e) {
+    let reactThis = this
+    // Disabling multiple instances of song in the song queue
+    if ( reactThis.props.songBank.some(e => e.trackURI === reactThis.props.trackURI ) == true ) {
+      this.setState({
+        disabled: true,
+      })
+    } else {
+      // Sending song data from SearchResults -> DropDownList -> SearchBar -> Main
+      let songData = {
+        trackName: reactThis.props.title,
+        artistName: reactThis.props.artist,
+        albumImageURL: reactThis.props.image,
+        trackURI: reactThis.props.trackURI,
+        addSong: true,
+        upVotes: 0,
+      }
+      reactThis.props.addSong(songData);
+      // Host will then add song to SongList
+      reactThis.setState({
+        disabled: true,
+      })
+    }
+  }
+
+  render() {
+    const { classes, theme } = this.props;
+    return (
+      <div onClick={this.handleClick}>
+        <Card className={classes.card}>
+          <CardMedia  className={classes.cover}
+                      image={this.props.image}
+          />
+          <div className={classes.details}>
+            <CardContent className={classes.content}>
+              <Typography className={classes.title}>
+                {this.props.title}
+              </Typography>
+              <Typography className={classes.artist}>
+                {this.props.artist}
+              </Typography>
+            </CardContent>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+}
+
+export default withStyles(styles, { withTheme: true })(SearchResults);

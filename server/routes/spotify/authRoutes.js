@@ -23,7 +23,7 @@ const scope = [
 router.get('/logout', (req, res) => {
   req.logout();
   req.session.userId = null;
-  res.redirect('/login');
+  res.redirect('/');
 });
 
 // Auth with Spotify

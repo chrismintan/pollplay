@@ -47,12 +47,16 @@ class CreateRoom extends React.Component {
       input: '',
       roomCode: '',
       spotifyId: '',
+      counter: 0,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleRoomCodeChange = this.handleRoomCodeChange.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
+
+    this.testButton = this.testButton.bind(this);
+    this.persistentState = this.persistentState.bind(this);
   }
 
   componentWillUnmount() {
@@ -61,6 +65,7 @@ class CreateRoom extends React.Component {
   }
 
   componentDidMount() {
+    this.persistentState()
     axios.get('/auth/isLoggedIn')
     .then(({data}) => {
       this.props.setUserID(data.userId);
@@ -109,6 +114,34 @@ class CreateRoom extends React.Component {
     this.props.history.push(`/rooms/${roomCode}`);
   }
 
+  testButton(event) {
+    event.preventDefault();
+    let newCount = this.state.counter + 1
+    this.setState({
+      counter: this.state.counter + 1
+    })
+    localStorage.setItem('counter', JSON.stringify(newCount));
+  }
+
+  persistentState() {
+    for ( let counter in this.state ) {
+      if ( localStorage.hasOwnProperty('counter') ) {
+        let value = localStorage.getItem('counter');
+
+        try {
+          value = JSON.parse(value);
+          this.setState({
+            counter: value,
+          });
+        } catch(e) {
+          this.setState({
+            counter: value,
+          })
+        }
+      }
+    }
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -131,7 +164,7 @@ class CreateRoom extends React.Component {
 
     return (
       <div>
-        <Grid container>
+        <Grid container spacing={0}>
           <div className={classes.paper}>
             {component}
             <div>
@@ -196,6 +229,8 @@ class CreateRoom extends React.Component {
             </div>
           </div>
         </Grid>
+        <h1>{this.state.counter}</h1>
+        <button onClick={this.testButton}>TEST STATE PERSIST</button>
       </div>
     )
   }

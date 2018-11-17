@@ -9,6 +9,21 @@ const axios = require('axios');
 //   res.json(req.session.spotifyId || null);
 // });
 
+router.get('/upVoteSong', (req, res) => {
+  console.log('1')
+  console.log('REQ.SESSION!', req.sessionCookies)
+})
+
+router.get('/rooms/:roomId', (req, res) => {
+  db.getRoomData({ room: req.query.query }, (err, result) => {
+    if ( err ) {
+      console.log(err);
+    } else {
+      res.json(result)
+    }
+  })
+})
+
 router.post('/createRoom', (req, res) => {
   db.addRoom({ roomName: req.body.roomName, spotifyId: req.body.spotifyId }, (err, result) => {
     if (err) {
@@ -20,6 +35,8 @@ router.post('/createRoom', (req, res) => {
     }
   });
 });
+
+router.post
 
 router.get('/search', (req, res) => {
   const token = req.query.token
@@ -66,42 +83,26 @@ router.get('/searchArtist', (req, res) => {
   });
 });
 
-router.post('/rooms/:roomId', (req, res) => {
-  db.showAllSongsInRoom( { roomId: req.params.roomId }, (err, result) => {
-    if ( err ) {
-      console.log('NO DATA:', err);
-      res.sendStatus(500);
-    } else {
-      req.session
-    }
-  })
-})
-
 router.get('/getAllSongs', (req, res) => {
-  let roomId = req.session.roomId;
-  console.log('getAllSongs roomID=',roomId)
-  console.log('HER EIS REQ.session',req.session)
-  db.showAllUnplayedSongsInRoom(roomId, (err,data) => {
+  console.log(req.query.roomId)
+  db.getSongsInRoom( {roomId: req.query.roomId} , (err, result) => {
     if (err) {
-      console.log('NO DATA 4 U',err);
+      console.log('Unable to get all songs',err);
       res.sendStatus(500);
     } else {
-      console.log('data reterieval success!,',data);
-      res.json(data);
+      console.log('Got all songs!', result);
+      res.json(result);
     }
   });
 });
 
 router.post('/saveSong', (req,res) => {
-  let roomId = req.session.roomId;
-  let songObj = req.body.songObj;
-  //ADD SONG TO CURRENT ROOM
-  db.addSongToRoom(songObj, roomId, function(err,data){
+  db.addSongToRoom( {songObj: req.body} , (err, result) => {
     if (err) {
-      console.log('NOPE insert song',err);
+      console.log('Unable to insert song', err);
       res.sendStatus(500);
     } else {
-      console.log('data insertion success!,',data);
+      console.log('Song added!')
       res.end();
     }
   });

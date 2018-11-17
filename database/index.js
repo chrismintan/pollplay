@@ -48,6 +48,21 @@ const addRoom = (req, res) => {
   })
 }
 
+const addSongToRoom = (req, res) => {
+  let text = `INSERT INTO songs_rooms (track, artist, album_image, track_uri, room_code) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+
+  let values = [req.songObj.trackName, req.songObj.artistName, req.songObj.albumImageURL, req.songObj.trackURI, req.songObj.roomID];
+
+  pool.query(text, values, (err, result) => {
+    if ( err ) {
+      console.log('error:', err);
+      res(null, err);
+    } else {
+      res(null, result);
+    }
+  })
+}
+
 const addUser = (req, res) => {
   console.log(req.spotify_id)
   let text = `SELECT * FROM users WHERE spotify_id = '${req.spotify_id}'`;
@@ -114,7 +129,7 @@ const getRoomData = (req, res) => {
 }
 
 const getSongsInRoom = (req, res) => {
-  let text = `SELECT * FROM songs INNER JOIN songs_rooms ON songs.id = songs_rooms.song_id WHERE songs_rooms.room_id = '${req.query.roomID}'`;
+  let text = `SELECT * FROM songs_rooms WHERE room_code = '${req.roomId}'`;
   pool.query(text, (err, result) => {
     if (err) {
       res.sendStatus(500);
@@ -158,8 +173,22 @@ const updateAccessTokenAndExpiresAt = (req, res) => {
   })
 }
 
+const upVoteSong = (req, res) => {
+  console.log('REQ:', req)
+  let text = `UPDATE songs_rooms SET upvote = upvote + 1 WHERE room_code = '${req.roomID}'' AND track_uri = '${req.trackURI}' RETURNING *`;
+  pool.query(text, (err, result) => {
+    if ( err ) {
+      res(err);
+      console.log(err);
+    } else {
+      res(null, result.rows);
+    }
+  })
+}
+
 module.exports = {
   addRoom,
+  addSongToRoom,
   addUser,
   getAccessTokenAndExpiresAt,
   getRoomData,
@@ -167,6 +196,7 @@ module.exports = {
   getUserById,
   getUserBySpotifyId,
   updateAccessTokenAndExpiresAt,
+  upVoteSong,
 }
 
 

@@ -1,25 +1,21 @@
 import React from 'react';
-import Song from './Song.jsx';
-
-
+import Songs from './Songs.jsx';
 
 class SongList extends React.Component {
-
-  render(){
-
-    let list = this.props.songBank.map( (songBank, index) => {
-
+  render() {
+    let songPoll = this.props.songBank.map( (songBank, index) => {
       return (
-        <Song title={songBank.title} artist={songBank.artist} key={index} dropDownSongs={songBank.dropDownSongs} />
+        <Songs key={index} title={songBank.trackName} artist={songBank.artistName} image={songBank.albumImageURL} upVoteSong={this.props.upVoteSong} trackURI={songBank.trackURI} />
       )
     })
 
     return (
       <div>
-        {list}
+        <div style={{ lineHeight: '53.75px' }}>Upvote Songs!</div>
+        {songPoll}
       </div>
     )
   }
 }
 
-export default SongList;
+export default SongList

@@ -18,11 +18,12 @@ CREATE TABLE songs (
 DROP TABLE IF EXISTS songs_rooms;
 CREATE TABLE songs_rooms (
 	id SERIAL PRIMARY KEY,
-	song_id INT NOT NULL,
-	room_id INT NOT NULL,
-	upvote INT NOT NULL DEFAULT 0,
-	downvote INT NOT NULL DEFAULT 0,
-	isPlayed bit NOT NULL DEFAULT '0'
+	track varchar(250) NOT NULL,
+	artist varchar(250) NOT NULL,
+	album_image varchar(250) NOT NULL,
+	track_uri TEXT NOT NULL,
+	room_code varchar(250) NOT NULL,
+	upvote INT NOT NULL DEFAULT 0
 );
 
 DROP TABLE IF EXISTS users;
