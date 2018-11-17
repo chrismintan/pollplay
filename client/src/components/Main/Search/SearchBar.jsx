@@ -97,6 +97,7 @@ class SearchBar extends React.Component {
   }
 
   handleArtistSearch(event) {
+    console.log('search!')
 
     let reactThis = this
 

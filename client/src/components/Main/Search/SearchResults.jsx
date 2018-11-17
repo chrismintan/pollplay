@@ -16,7 +16,7 @@ const styles = {
     borderRadius: 0,
     background: '#383838',
     '&:hover': {
-      background: 'black',
+      background: 'rgb(33, 33, 33)',
     },
   },
   details: {
@@ -65,7 +65,7 @@ class SearchResults extends React.Component {
         albumImageURL: reactThis.props.image,
         trackURI: reactThis.props.trackURI,
         addSong: true,
-        upVotes: 0,
+        likes: 0,
       }
       reactThis.props.addSong(songData);
       // Host will then add song to SongList
@@ -79,6 +79,7 @@ class SearchResults extends React.Component {
     const { classes, theme } = this.props;
     return (
       <div onClick={this.handleClick}>
+
         <Card className={classes.card}>
           <CardMedia  className={classes.cover}
                       image={this.props.image}
@@ -94,6 +95,7 @@ class SearchResults extends React.Component {
             </CardContent>
           </div>
         </Card>
+
       </div>
     );
   }

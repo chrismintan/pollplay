@@ -5,6 +5,12 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import classNames from 'classnames';
+import TouchRipple from '@material-ui/core/ButtonBase/TouchRipple';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Favorite from '@material-ui/icons/Favorite';
+import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
+import red from '@material-ui/core/colors/red';
 
 const styles = theme => ({
   root: {
@@ -37,7 +43,13 @@ const styles = theme => ({
       color: 'blue',
       backgroundColor: 'white',
     }
-  }
+  },
+  root: {
+    color: red[600],
+    '&$checked': {
+      color: red[500],
+    },
+  },
 });
 
 class CreateRoom extends React.Component {
@@ -56,12 +68,14 @@ class CreateRoom extends React.Component {
     this.joinRoom = this.joinRoom.bind(this);
 
     this.testButton = this.testButton.bind(this);
+    this.clear = this.clear.bind(this);
     this.persistentState = this.persistentState.bind(this);
   }
 
   componentWillUnmount() {
+    localStorage.clear();
     // Hackerish way to relead script
-    window.location.reload()
+    window.location.reload();
   }
 
   componentDidMount() {
@@ -123,6 +137,11 @@ class CreateRoom extends React.Component {
     localStorage.setItem('counter', JSON.stringify(newCount));
   }
 
+  clear(event) {
+    event.preventDefault();
+    localStorage.clear();
+  }
+
   persistentState() {
     for ( let counter in this.state ) {
       if ( localStorage.hasOwnProperty('counter') ) {
@@ -149,7 +168,7 @@ class CreateRoom extends React.Component {
     if (this.props.userID) {
       component = (
         <div>
-          <h2>Create A Room!</h2>
+          <h2 style={{ color: "#1db954" }}>Create A Room!</h2>
           <div>
             <form>
               <input type='text' value={this.state.input} onChange={this.handleInputChange} />
@@ -159,7 +178,7 @@ class CreateRoom extends React.Component {
         </div>
       )
     } else {
-      component = <a style={{ color: "#66FF66FF" }} href='/auth/login'>Please Login to Create a Room!</a>
+      component = <a style={{ color: "#1db954" }} href='/auth/login'>Please Login to Create a Room!</a>
     }
 
     return (
@@ -168,7 +187,7 @@ class CreateRoom extends React.Component {
           <div className={classes.paper}>
             {component}
             <div>
-              <p>or join an existing room!</p>
+              <p style={{ color: "#1db954" }}>or join an existing room!</p>
               <div>
                 <form>
                   <input type='text' placeholder='Enter a room code...' value={this.state.roomCode} onChange={this.handleRoomCodeChange} />
@@ -231,6 +250,12 @@ class CreateRoom extends React.Component {
         </Grid>
         <h1>{this.state.counter}</h1>
         <button onClick={this.testButton}>TEST STATE PERSIST</button>
+        <button onClick={this.clear}>CLEAR STORAGE</button>
+
+<FavoriteBorder className={classes.root} />
+
+<Favorite />
+
       </div>
     )
   }

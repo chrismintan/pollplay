@@ -25,6 +25,7 @@ class Main extends React.Component {
     this.state = {
       host: false,
       songBank: [],
+      nextSong: "spotify:track:746bHsY27aWTMYpoxqECOm",
       roomID: null,
       access_token: null,
       spotify_id: null,
@@ -39,15 +40,27 @@ class Main extends React.Component {
       trackPosition: 0,
       trackPlaying: false,
       trackName: '',
+      voteHandler: []
     };
 
-    this.addSong = this.addSong.bind(this);
-    this.nextSong = this.nextSong.bind(this);
-    this.saveSong = this.saveSong.bind(this);
     this.socket = io.connect();
-    this.updateSongBank = this.updateSongBank.bind(this);
-    this.upVoteSong = this.upVoteSong.bind(this);
 
+    // Adding songs to polling pool
+    this.addSong = this.addSong.bind(this);
+    this.saveSong = this.saveSong.bind(this);
+
+    // Voting functions
+    this.upVoteSong = this.upVoteSong.bind(this);
+    this.updateVotes = this.updateVotes.bind(this);
+
+    // Remove song from room
+    this.removeSong = this.removeSong.bind(this);
+
+    // Updating state from data received from socket
+    this.updateSongBank = this.updateSongBank.bind(this);
+    this.updateStatus = this.updateStatus.bind(this);
+
+    this.nextSong = this.nextSong.bind(this);
 
     // For testing functions
     this.testing = this.testing.bind(this);
@@ -56,43 +69,26 @@ class Main extends React.Component {
   // Setting up player update function (for host)
   async componentWillMount() {
 
-    // Giving a 'unique' cookie to each user
-    function cookie(length) {
-      var text = '';
-      var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      for (var i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-      }
-      return text;
-    };
-
-    const cookies = new Cookies();
-
-    if ( typeof cookies.get('state') === 'undefined' ) {
-      let state = cookie(10)
-      cookies.set('state', state, { path: '/' })
-    }
-
     var playBackData;
 
     const {roomId} = this.props.match.params;
     let reactThis = this;
 
-        // Get all songs in songBank
+    // Get all songs in songBank
     await axios.get('/api/getAllSongs', {
       params: {
         roomId: roomId,
       }
     })
     .then(({data}) => {
-      console.log(data)
       let songBank = [];
 
       for ( let i = 0; i < data.length; i++ ) {
         let obj = { trackName: data[i].track,
                     artistName: data[i].artist,
                     albumImageURL: data[i].album_image,
-                    trackURI: data[i].track_uri }
+                    trackURI: data[i].track_uri,
+                    likes: data[i].upvote }
 
         songBank = songBank.concat(obj)
       }
@@ -127,27 +123,19 @@ class Main extends React.Component {
         this.setState({
           host: true,
         })
-
         console.log('Host is in the building!')
+
         // Socket emitting (only host)
         let reactThis = this;
         setInterval(function() {
-          var url = `https://api.spotify.com/v1/me/player`
-          fetch(url, {
-            method: `GET`,
-            headers: {
-              Authorization: `Bearer ${reactThis.state.access_token}`
-            }
-          })
-          .then((response) => response.json())
-          .then((responseJson) => {
-
-            playBackData = responseJson;
-
+          axios.get('/spotify/currentSong')
+          .then(({data}) => {
+            playBackData = data;
             playBackData.access_token = reactThis.state.access_token;
-
             playBackData.updateStatus = true;
-
+          })
+          .catch(error => {
+            console.log(error)
           })
           reactThis.socket.emit(roomId, playBackData)
         }, 3000)
@@ -169,28 +157,8 @@ class Main extends React.Component {
     this.socket.on('message', function(data) {
       // console.log('SOCKET DATA!:', data)
       if ( data.updateStatus == true ) {
-        let access_token = data.access_token;
-        let albumURI = data.item.album.uri;
-        let albumImageURL = data.item.album.images[0].url;
-        let trackName = data.item.name;
-        let albumName = data.item.album.name;
-        let artistName = data.item.artists[0].name;
-        let trackPosition = data.progress_ms;
-        let trackDuration = data.item.duration_ms;
-        let trackPlaying = data.is_playing;
-        reactThis.setState({
-          access_token: access_token,
-          albumURI: data.item.album.uri,
-          albumImageURL: data.item.album.images[0].url,
-          trackName: data.item.name,
-          albumName: data.item.album.name,
-          artistName: data.item.artists[0].name,
-          trackPosition: data.progress_ms,
-          trackDuration: data.item.duration_ms,
-          trackPlaying: data.is_playing,
-        })
+        reactThis.updateStatus(data)
       } else if ( data.addSong == true ) {
-        console.log(data);
         let newArray = reactThis.state.songBank.concat(data);
         reactThis.setState({
           songBank: newArray,
@@ -199,19 +167,40 @@ class Main extends React.Component {
           reactThis.saveSong(data);
         }
       } else if ( data.upVote == true ) {
-        reactThis.upVoteSong(data);
+          console.log('shouldcomehere', data.trackURI)
+          reactThis.updateSongBank(data.trackURI);
+        if ( reactThis.state.host == true ) {
+          reactThis.updateVotes(data);
+        }
       }
     })
     // Socket listener
   }
 
-  // Not binded to anything at the moment
-  updateSongBank(input) {
-    this.state.songBank.push(input)
-  }
-
-  upVoteSong(songData) {
-    console.log('Upvoted!', songData)
+  updateStatus(data) {
+    console.log(data)
+    let reactThis = this;
+    this.setState({
+      access_token: data.access_token,
+      albumURI: data.item.album.uri,
+      albumImageURL: data.item.album.images[0].url,
+      trackName: data.item.name,
+      albumName: data.item.album.name,
+      artistName: data.item.artists[0].name,
+      trackPosition: data.progress_ms,
+      trackDuration: data.item.duration_ms,
+      trackPlaying: data.is_playing,
+      trackURI: data.item.uri,
+    })
+    // if ( data.is_playing == false && this.state.songBank.length > 0 ) {
+    //   this.nextSong(this.state.songBank[0].trackURI);
+    // };
+    if ( data.item.duration_ms - data.progress_ms <= 3000 ) {
+      let timeLeft =  data.item.duration_ms - data.progress_ms;
+      setTimeout(function() {
+        reactThis.nextSong(reactThis.state.songBank[0].trackURI)
+      }, timeLeft - 2000 )
+    }
   }
 
   // Main -> SearchBar -> DropDownList -> SearchResult (User adds song to polling pool)
@@ -221,24 +210,7 @@ class Main extends React.Component {
     this.socket.emit(roomId, songData)
   }
 
-  async getCurrentSong() {
-    const {data: {songData}} = await axios.get('/spotify/currentSong');
-    let curSong = Object.values(songData)
-    this.setState({
-      currentSong: curSong,
-    })
-  }
-
-  async nextSong() {
-    let reactThis = this;
-
-    const response = await axios.post('/spotify/playNextSong');
-    if ( response.statusText == "OK" ) {
-      // Using setTimeout because async / await / .then doesn't seem to work
-      setTimeout(function(){reactThis.getCurrentSong()}, 500);
-    }
-  }
-
+  // After emitting songData to socket, update DB
   saveSong(songData) {
     let songObj = songData
     songObj.roomID = this.state.roomID
@@ -251,8 +223,107 @@ class Main extends React.Component {
     });
   }
 
-  testing() {
+  // Update songBank after receiving a vote
+  updateSongBank(trackURI) {
+    let songBank = this.state.songBank;
+    for ( var i in songBank ) {
+      if ( songBank[i].trackURI == trackURI ) {
+        songBank[i].likes = parseInt(songBank[i].likes) + 1;
+      }
+    }
 
+    // Sort songs from most likes to least
+    function compare(a, b) {
+      if ( parseInt(a.likes) > parseInt(b.likes) )
+        return -1;
+      if ( parseInt(a.likes) < parseInt(b.likes) )
+        return 1;
+      return 0;
+    }
+
+    // Sorting songBank by most likes
+    songBank.sort(compare);
+
+    // For some reason setting the state with only 1 change in variable doesnt re render the child component
+    this.setState({
+      songBank: [],
+    })
+    this.setState({
+      songBank: songBank,
+    })
+  }
+
+  upVoteSong(songData) {
+    const {roomId} = this.props.match.params;
+    songData.roomID = this.state.roomID;
+    console.log('upVoteSong()', songData)
+    this.socket.emit(roomId, songData);
+  }
+
+  updateVotes(songData) {
+    if ( this.state.host == true ) {
+      console.log('updateVotes()', songData);
+      axios.put('/api/upVoteSong', songData)
+      .then((data) => {
+        console.log('Vote success!', data);
+      })
+      .catch(function(error) {
+        console.log('Vote failed', error);
+      })
+    }
+  }
+
+  async getCurrentSong() {
+    const {data: {songData}} = await axios.get('/spotify/currentSong');
+    let curSong = Object.values(songData)
+    this.setState({
+      currentSong: curSong,
+    })
+  }
+
+  async nextSong(song) {
+    let reactThis = this;
+    let nextTrackURI = song
+    if ( this.state.host == true ) {
+      await axios.put('/spotify/playNext', {nextTrackURI})
+      .then(({data}) => {
+        console.log('Next song!')
+        // Removing song from the queue + db
+        let newSongBank = this.state.songBank.slice(1);
+        reactThis.removeSong(reactThis.state.roomID, reactThis.state.songBank[0].trackURI);
+        this.setState({
+          songBank: [],
+        })
+        this.setState({
+          songBank: newSongBank,
+        })
+      })
+      .catch(function(error) {
+        console.log('Play next failed', error);
+      })
+    }
+  }
+
+  removeSong(roomID, song) {
+    axios.delete('/api/removeSong', {
+      params: {
+        roomID: roomID,
+        trackURI: song,
+      }
+    })
+    .then(({data}) => {
+      console.log('Removed successfully!')
+    })
+    .catch(function(error) {
+      console.log('Removal failed.', error)
+    })
+  }
+
+  testing() {
+    this.setState({
+      songBank: [],
+    })
+    console.log(this.state.songBank)
   }
 
   render() {
@@ -268,9 +339,7 @@ class Main extends React.Component {
                 <div className={classes.paper}>
                   <h1>Project 4!</h1>
                   <CurrentSong {...this.state} />
-                  <button onClick={this.getCurrentSong}>Get Current Song</button>
-                  <button onClick={this.nextSong}>Next Song</button>
-                  <button onClick={this.testing}>TEST BUTTON!</button>
+                  <button onClick={this.nextSong}>TEST BUTTON!</button>
                 </div>
               </Grid>
 
@@ -290,7 +359,7 @@ class Main extends React.Component {
 
             </Grid>
           </div>
-        </div><button onClick={this.testing}>TEST!</button>
+        </div>
       </div>
     )
   }

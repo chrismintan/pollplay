@@ -168,15 +168,7 @@ router.get('/currentSong', async (req, res) => {
   try {
     const {data} = await axios(options);
     if ( typeof data === 'object' ) {
-      res.json({
-        timeUntilNextSong: data.item.duration_ms - data.progress_ms,
-        isPlaying: data.is_playing,
-        songData: {
-          title: data.item.name,
-          artist: data.item.artists[0].name,
-          image: data.item.album.images[1].url
-        }
-      });
+      res.json(data);
     }
   } catch(err) {
     console.log(err);
@@ -203,7 +195,8 @@ router.post('/playNextSong', (req, res) => {
 });
 
 router.put('/playNext', (req, res) => {
-  let nextTrack = req.body.nextTrack
+  console.log('REQ:', req)
+  let nextTrack = req.body.nextTrackURI
   console.log(nextTrack)
   const options = {
     method: 'PUT',

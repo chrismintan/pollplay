@@ -8,59 +8,12 @@ class CurrentSong extends React.Component {
     this.state = {
       init: false,
     }
-    const cookies = new Cookies();
-
-    cookies.remove('albumURI')
-    cookies.remove('albumImageURL')
-    cookies.remove('trackName')
-    cookies.remove('albumName')
-    cookies.remove('artistName')
-    cookies.remove('trackPosition')
-    cookies.remove('trackDuration')
-    cookies.remove('trackPlaying')
-    cookies.remove('trackURI')
-  }
-
-  componentWillUnmount() {
-    cookies.remove('albumURI')
-    cookies.remove('albumImageURL')
-    cookies.remove('trackName')
-    cookies.remove('albumName')
-    cookies.remove('artistName')
-    cookies.remove('trackPosition')
-    cookies.remove('trackDuration')
-    cookies.remove('trackPlaying')
-    cookies.remove('trackURI')
-  }
-
-  componentWillMount() {
-
   }
 
   componentDidMount() {
     console.log('CURRENTSONG MOUNTED!')
 
-    // let path = window.location.href;
-
-    // let doc = document.createElement('div');
-
-    // doc.setAttribute('id', 'inroom')
-
-    // doc.textContent = 'yes';
-
-    // document.getElementById('currentSong').appendChild(doc)
-
     const cookies = new Cookies();
-
-    cookies.remove('albumURI')
-    cookies.remove('albumImageURL')
-    cookies.remove('trackName')
-    cookies.remove('albumName')
-    cookies.remove('artistName')
-    cookies.remove('trackPosition')
-    cookies.remove('trackDuration')
-    cookies.remove('trackPlaying')
-    cookies.remove('trackURI')
 
     let reactThis = this;
 
@@ -87,14 +40,6 @@ class CurrentSong extends React.Component {
       cookies.set('trackURI', reactThis.props.trackURI, {path: '/', maxAge: 5})
 
     }, 3000)
-
-    // const script = document.createElement("script");
-
-    // script.src = "https://raw.githubusercontent.com/chrismintan/pollplay/master/client/src/components/Main/NowPlaying/script2.js";
-
-    // script.async = true
-
-    // document.body.appendChild(script);
   }
 
 

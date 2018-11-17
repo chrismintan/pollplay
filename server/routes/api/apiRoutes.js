@@ -9,9 +9,24 @@ const axios = require('axios');
 //   res.json(req.session.spotifyId || null);
 // });
 
-router.get('/upVoteSong', (req, res) => {
-  console.log('1')
-  console.log('REQ.SESSION!', req.sessionCookies)
+router.put('/upVoteSong', (req, res) => {
+  db.upVoteSong( { roomID: req.body.roomID, trackURI: req.body.trackURI }, (err, result) => {
+    if ( err ) {
+      console.log('Error:', err);
+    } else {
+      res.json(result);
+    }
+  })
+})
+
+router.delete('/removeSong', (req, res) => {
+  db.removeSongFromRoom( { roomId: req.query.roomID, trackURI: req.query.trackURI }, (err, result) => {
+    if ( err ) {
+      console.log('Error:', err);
+    } else {
+      res.json(result)
+    }
+  })
 })
 
 router.get('/rooms/:roomId', (req, res) => {

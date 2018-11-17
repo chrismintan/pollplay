@@ -129,7 +129,7 @@ const getRoomData = (req, res) => {
 }
 
 const getSongsInRoom = (req, res) => {
-  let text = `SELECT * FROM songs_rooms WHERE room_code = '${req.roomId}'`;
+  let text = `SELECT * FROM songs_rooms WHERE room_code = '${req.roomId}' ORDER BY upvote DESC`;
   pool.query(text, (err, result) => {
     if (err) {
       res.sendStatus(500);
@@ -162,6 +162,17 @@ const getUserBySpotifyId = (req, res) => {
   });
 };
 
+const removeSongFromRoom = (req, res) => {
+  let text = `DELETE FROM songs_rooms WHERE room_code = '${req.roomId}' AND track_uri = '${req.trackURI}' RETURNING *`;
+  pool.query(text, (err, result) => {
+    if ( err ) {
+      res(err);
+    } else {
+      res(null, result);
+    }
+  })
+}
+
 const updateAccessTokenAndExpiresAt = (req, res) => {
   let text = `UPDATE users SET access_token = '${req.access_token}', token_expires_at = '${req.token_expires_at}' WHERE spotify_id = ${req.spotify_id}`;
   pool.query(text, (err, result) => {
@@ -174,14 +185,13 @@ const updateAccessTokenAndExpiresAt = (req, res) => {
 }
 
 const upVoteSong = (req, res) => {
-  console.log('REQ:', req)
-  let text = `UPDATE songs_rooms SET upvote = upvote + 1 WHERE room_code = '${req.roomID}'' AND track_uri = '${req.trackURI}' RETURNING *`;
+  console.log('index.js database REQ:', req)
+  let text = `UPDATE songs_rooms SET upvote = upvote + 1 WHERE room_code = '${req.roomID}' AND track_uri = '${req.trackURI}' RETURNING *`;
   pool.query(text, (err, result) => {
     if ( err ) {
-      res(err);
       console.log(err);
     } else {
-      res(null, result.rows);
+      res(null, result);
     }
   })
 }
@@ -195,6 +205,7 @@ module.exports = {
   getSongsInRoom,
   getUserById,
   getUserBySpotifyId,
+  removeSongFromRoom,
   updateAccessTokenAndExpiresAt,
   upVoteSong,
 }
