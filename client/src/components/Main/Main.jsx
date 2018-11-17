@@ -197,9 +197,7 @@ class Main extends React.Component {
     // };
     if ( data.item.duration_ms - data.progress_ms <= 3000 ) {
       let timeLeft =  data.item.duration_ms - data.progress_ms;
-      setTimeout(function() {
-        reactThis.nextSong(reactThis.state.songBank[0].trackURI)
-      }, timeLeft - 2000 )
+      reactThis.nextSong(reactThis.state.songBank[0].trackURI)
     }
   }
 
@@ -282,21 +280,23 @@ class Main extends React.Component {
   }
 
   async nextSong(song) {
+    // Removing song from the queue + db
+    let newSongBank = this.state.songBank.slice(1);
     let reactThis = this;
+    let roomID = this.state.roomID;
+    let trackURI = this.state.songBank[0].trackURI;
+    this.setState({
+      songBank: [],
+    })
+    this.setState({
+      songBank: newSongBank,
+    })
     let nextTrackURI = song
     if ( this.state.host == true ) {
       await axios.put('/spotify/playNext', {nextTrackURI})
       .then(({data}) => {
         console.log('Next song!')
-        // Removing song from the queue + db
-        let newSongBank = this.state.songBank.slice(1);
-        reactThis.removeSong(reactThis.state.roomID, reactThis.state.songBank[0].trackURI);
-        this.setState({
-          songBank: [],
-        })
-        this.setState({
-          songBank: newSongBank,
-        })
+        reactThis.removeSong(roomID, trackURI);
       })
       .catch(function(error) {
         console.log('Play next failed', error);

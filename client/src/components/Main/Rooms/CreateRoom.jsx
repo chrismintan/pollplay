@@ -248,13 +248,6 @@ class CreateRoom extends React.Component {
             </div>
           </div>
         </Grid>
-        <h1>{this.state.counter}</h1>
-        <button onClick={this.testButton}>TEST STATE PERSIST</button>
-        <button onClick={this.clear}>CLEAR STORAGE</button>
-
-<FavoriteBorder className={classes.root} />
-
-<Favorite />
 
       </div>
     )
