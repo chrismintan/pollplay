@@ -36,24 +36,24 @@ class App extends React.Component {
 
     return (
       <div className='whole'>
-        <NavBar userID={this.state.userID} />
-        <Route
-          exact path='/'
-          render={(props) => (
-            <CreateRoom
-              setUserID={this.setUserID}
-              setRoomID={this.setRoomID}
-              roomID={this.state.roomID}
-              userID={this.state.userID}
-            />
-          )}
-        />
-        <Route
-          path='/rooms/:roomId'
-          render={(props) => (
-            <Main {...props} userId={this.state.userID}/>
-          )}
-        />
+          <NavBar userID={this.state.userID} />
+          <Route
+            exact path='/'
+            render={(props) => (
+              <CreateRoom
+                setUserID={this.setUserID}
+                setRoomID={this.setRoomID}
+                roomID={this.state.roomID}
+                userID={this.state.userID}
+              />
+            )}
+          />
+          <Route
+            path='/rooms/:roomId'
+            render={(props) => (
+              <Main {...props} userId={this.state.userID}/>
+            )}
+          />
       </div>
     )
   }

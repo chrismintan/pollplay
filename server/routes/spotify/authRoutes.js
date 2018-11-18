@@ -43,7 +43,7 @@ router.get('/spotify/redirect', passport.authenticate('spotify', {failureRedirec
 
 router.get('/isLoggedIn', (req, res) => {
 
-  if ( req.session.passport.user[0].access_token ) {
+  if ( typeof req.session.passport != "undefined" ) {
 
     let access_token = req.session.passport.user[0].access_token;
     let refresh_token = req.session.passport.user[0].refresh_token;

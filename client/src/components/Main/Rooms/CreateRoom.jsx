@@ -11,6 +11,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 import red from '@material-ui/core/colors/red';
+import green from '@material-ui/core/colors/green';
 
 const styles = theme => ({
   root: {
@@ -20,9 +21,16 @@ const styles = theme => ({
     textAlign: 'center',
     width: '100%',
   },
-  textField: {
-    color: '#FEFEFEFF',
-    borderBottom: '1px solid white',
+  textFieldCreate: {
+    color: '#FEFEFE',
+    borderBottom: '3px solid #1db954',
+    marginBottom: 5,
+    width: '100%',
+
+  },
+  textFieldJoin: {
+    color: '#E6E6E5',
+    borderBottom: '2px solid #4DB6AC',
     marginBottom: 5,
     width: '100%',
 
@@ -33,6 +41,7 @@ const styles = theme => ({
     overflow: 'hidden',
     width: '100%',
     color: 'red',
+    textAlign: 'center',
   },
   hidden: {
     display: 'none',
@@ -168,17 +177,36 @@ class CreateRoom extends React.Component {
     if (this.props.userID) {
       component = (
         <div>
-          <h2 style={{ color: "#1db954" }}>Create A Room!</h2>
-          <div>
-            <form>
-              <input type='text' value={this.state.input} onChange={this.handleInputChange} />
-              <button onClick={this.handleClick}>Create!</button>
-            </form>
-          </div>
+          <form onSubmit={this.handleClick}>
+            <TextField
+              value={this.state.input}
+              onChange={this.handleInputChange}
+              fullWidth
+              InputProps={{
+                disableUnderline: true,
+                classes: {
+                  input: classes.textFieldCreate,
+                },
+              }}
+              // hintStyle={{ width: '600px', textAlign: 'center' }}
+              style={{ width: '33%', paddingTop: 15 }}
+              label='Create a room!'
+              InputLabelProps={{
+                style: {
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  width: '100%',
+                  color: '#1db954',
+                  fontSize: 30,
+                }
+              }}
+            />
+          </form>
         </div>
       )
     } else {
-      component = <a style={{ color: "#1db954" }} href='/auth/login'>Please Login to Create a Room!</a>
+      component = <a style={{ color: "#1db954", fontStyle: 'bold' }} href='/auth/login'>Please Login to Create a Room!</a>
     }
 
     return (
@@ -187,49 +215,21 @@ class CreateRoom extends React.Component {
           <div className={classes.paper}>
             {component}
             <div>
-              <p style={{ color: "#1db954" }}>or join an existing room!</p>
+              <p style={{ color: "#FB0106FF", fontSize: 24, marginTop: 40 }}>or join an existing room!</p>
               <div>
                 <form>
-                  <input type='text' placeholder='Enter a room code...' value={this.state.roomCode} onChange={this.handleRoomCodeChange} />
-                  <button onClick={this.joinRoom}>Join Room!</button>
-                </form>
-
-                <form>
                   <TextField
+                    value={this.state.roomCode}
+                    onChange={this.handleRoomCodeChange}
                     fullWidth
                     InputProps={{
                       disableUnderline: true,
                       classes: {
-                        input: classes.textField,
+                        input: classes.textFieldJoin,
                       },
                     }}
                     // hintStyle={{ width: '600px', textAlign: 'center' }}
-                    style={{ width: '33%', paddingTop: 10 }}
-                    label='Create a room!'
-                    InputLabelProps={{
-                      style: {
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        width: '100%',
-                        color: '#E6E6E5FF',
-                        fontSize: 25,
-                      }
-                    }}
-                  />
-                </form>
-
-                <form>
-                  <TextField
-                    fullWidth
-                    InputProps={{
-                      disableUnderline: true,
-                      classes: {
-                        input: classes.textField,
-                      },
-                    }}
-                    // hintStyle={{ width: '600px', textAlign: 'center' }}
-                    style={{ width: '33%', paddingTop: 10 }}
+                    style={{ width: '27%', paddingTop: 10 }}
                     label='or join a room!'
                     InputLabelProps={{
                       style: {
@@ -237,18 +237,16 @@ class CreateRoom extends React.Component {
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
                         width: '100%',
-                        color: '#E6E6E5FF',
-                        fontSize: 25,
+                        color: '#4DB6AC',
+                        fontSize: 27,
                       }
                     }}
                   />
                 </form>
-
               </div>
             </div>
           </div>
         </Grid>
-
       </div>
     )
   }

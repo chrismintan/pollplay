@@ -40,7 +40,8 @@ class Main extends React.Component {
       trackPosition: 0,
       trackPlaying: false,
       trackName: '',
-      voteHandler: []
+      voteHandler: [],
+      nextQueued: false,
     };
 
     this.socket = io.connect();
@@ -59,6 +60,9 @@ class Main extends React.Component {
     // Updating state from data received from socket
     this.updateSongBank = this.updateSongBank.bind(this);
     this.updateStatus = this.updateStatus.bind(this);
+
+    // Host emiting updates
+    this.emitUpdate = this.emitUpdate.bind(this);
 
     this.nextSong = this.nextSong.bind(this);
 
@@ -116,30 +120,19 @@ class Main extends React.Component {
       console.error();
     });
 
+
     await axios.get('/auth/isLoggedIn')
     .then(({data}) => {
       if ( data.spotify_id == reactThis.state.spotify_id ) {
-        // Setting state for host to be true
         this.setState({
           host: true,
         })
         console.log('Host is in the building!')
 
-        // Socket emitting (only host)
-        let reactThis = this;
-        setInterval(function() {
-          axios.get('/spotify/currentSong')
-          .then(({data}) => {
-            playBackData = data;
-            playBackData.access_token = reactThis.state.access_token;
-            playBackData.updateStatus = true;
-          })
-          .catch(error => {
-            console.log(error)
-          })
-          reactThis.socket.emit(roomId, playBackData)
-        }, 3000)
-        // Socket emitting (only host)
+        // 1. Setting state for host to be true
+        setInterval(reactThis.emitUpdate, 3000)
+      } else {
+        reactThis.socket.emit(roomId, 'Another voter!');
       }
     })
     .catch(err => {
@@ -152,10 +145,18 @@ class Main extends React.Component {
 
     let reactThis = this
 
-    // Socket listener
+/* Socket listener listening for
+1. updateStatus
+ - updates seek bar and gets animations for vectors
+2. addSong
+ - listens for people who add songs to the song polling pool
+3. upVote
+ - listens for people who upvote songs in the song pool and updates it accordingly
+4. nextSong
+ - listens for song change and removes the song from the song poll list
+*/
     this.socket.emit('room', roomId)
     this.socket.on('message', function(data) {
-      // console.log('SOCKET DATA!:', data)
       if ( data.updateStatus == true ) {
         reactThis.updateStatus(data)
       } else if ( data.addSong == true ) {
@@ -167,14 +168,52 @@ class Main extends React.Component {
           reactThis.saveSong(data);
         }
       } else if ( data.upVote == true ) {
-          console.log('shouldcomehere', data.trackURI)
           reactThis.updateSongBank(data.trackURI);
         if ( reactThis.state.host == true ) {
           reactThis.updateVotes(data);
         }
+      } else if ( data.nextSong == true ) {
+        let newSongBank = reactThis.state.songBank.slice(1);
+        reactThis.setState({
+          songBank: [],
+        })
+        reactThis.setState({
+          songBank: newSongBank,
+        })
       }
     })
     // Socket listener
+  }
+
+  // 2. Emitting updates once every 3000ms
+  emitUpdate() {
+    const {roomId} = this.props.match.params;
+    let playBackData;
+    // Socket emitting (only host)
+    let reactThis = this;
+    axios.get('/spotify/currentSong')
+    .then(({data}) => {
+      playBackData = data;
+      playBackData.access_token = reactThis.state.access_token;
+      playBackData.updateStatus = true;
+
+      reactThis.socket.emit(roomId, playBackData)
+
+      // Checking to see if next song should be played
+      if ( playBackData.item.duration_ms - playBackData.progress_ms <= 10000 && reactThis.state.nextQueued == false ) {
+        let timeLeft = playBackData.item.duration_ms - playBackData.progress_ms - 1500;
+        reactThis.setState({
+          nextQueued: true,
+        })
+        setTimeout(function() {
+          reactThis.nextSong(reactThis.state.songBank[0].trackURI)
+        }, timeLeft)
+      }
+    })
+    .catch(error => {
+      console.log(error)
+    })
+    // Socket emitting (only host)
   }
 
   updateStatus(data) {
@@ -192,13 +231,6 @@ class Main extends React.Component {
       trackPlaying: data.is_playing,
       trackURI: data.item.uri,
     })
-    // if ( data.is_playing == false && this.state.songBank.length > 0 ) {
-    //   this.nextSong(this.state.songBank[0].trackURI);
-    // };
-    if ( data.item.duration_ms - data.progress_ms <= 3000 ) {
-      let timeLeft =  data.item.duration_ms - data.progress_ms;
-      reactThis.nextSong(reactThis.state.songBank[0].trackURI)
-    }
   }
 
   // Main -> SearchBar -> DropDownList -> SearchResult (User adds song to polling pool)
@@ -280,23 +312,19 @@ class Main extends React.Component {
   }
 
   async nextSong(song) {
-    // Removing song from the queue + db
-    let newSongBank = this.state.songBank.slice(1);
+    // 3. Removing song from the db (host only)
     let reactThis = this;
     let roomID = this.state.roomID;
     let trackURI = this.state.songBank[0].trackURI;
-    this.setState({
-      songBank: [],
-    })
-    this.setState({
-      songBank: newSongBank,
-    })
     let nextTrackURI = song
+
+    // Removing played song from the DB pool
     if ( this.state.host == true ) {
       await axios.put('/spotify/playNext', {nextTrackURI})
       .then(({data}) => {
         console.log('Next song!')
         reactThis.removeSong(roomID, trackURI);
+        reactThis.socket.emit(roomID, { nextSong: true } )
       })
       .catch(function(error) {
         console.log('Play next failed', error);
@@ -320,26 +348,31 @@ class Main extends React.Component {
   }
 
   testing() {
-    this.setState({
-      songBank: [],
-    })
-    console.log(this.state.songBank)
+    // this.setState({
+    //   songBank: [],
+    // })
+    // console.log(this.state.songBank)
+    const {roomId} = this.props.match.params;
+    console.log(roomId)
+    console.log('clicked!')
+    let message = "Hello everyone!"
+    this.socket.emit(roomId, message)
+    console.log('clicked!')
   }
 
   render() {
     const { classes } = this.props;
-
+      // <button onClick={this.testing}>TEST BUTTON!</button>
     return (
       <div>
+
         <div className='mainbody'>
           <div className={classes.roots}>
             <Grid container spacing={24}>
 
               <Grid item xs={6} spacing={24}>
                 <div className={classes.paper}>
-                  <h1>Project 4!</h1>
                   <CurrentSong {...this.state} />
-                  <button onClick={this.nextSong}>TEST BUTTON!</button>
                 </div>
               </Grid>
 
