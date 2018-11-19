@@ -77,15 +77,13 @@ class CurrentSong extends React.Component {
 
     return (
       <div className='current-song' id='currentSong'>
-        <img src="/logo.png" />
-          <canvas id="canvas"></canvas>
-          <div id="toast" className="toast">
-            <span id="text"></span>
-            <span style={{display: 'inline'}} id="text2"></span>&nbsp;
-            {nextButton}
-          </div>
-          <div className="trackposition" id="trackposition"><div className="fill" id="trackpositionfill"></div></div>
-          <script type="text/javascript" src="/test.js"></script>
+        <canvas id="canvas"></canvas>
+        <div id="toast" className="toast">
+          <span id="text"></span>
+          <span style={{display: 'inline'}} id="text2"></span>&nbsp;
+          {nextButton}
+        </div>
+        <div className="trackposition" id="trackposition"><div className="fill" id="trackpositionfill"></div></div>
       </div>
     )
   }
