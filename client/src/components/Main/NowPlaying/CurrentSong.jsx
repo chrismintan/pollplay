@@ -77,6 +77,7 @@ class CurrentSong extends React.Component {
 
     return (
       <div className='current-song' id='currentSong'>
+        <img src="/logo.png" />
           <canvas id="canvas"></canvas>
           <div id="toast" className="toast">
             <span id="text"></span>
@@ -84,6 +85,7 @@ class CurrentSong extends React.Component {
             {nextButton}
           </div>
           <div className="trackposition" id="trackposition"><div className="fill" id="trackpositionfill"></div></div>
+          <script type="text/javascript" src="/test.js"></script>
       </div>
     )
   }
