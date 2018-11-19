@@ -14,7 +14,7 @@ const styles = {
     alignItems: 'center',
     border: '1px solid transparent',
     borderRadius: 0,
-    background: '#383838',
+    background: 'transparent',
     '&:hover': {
       background: 'rgb(33, 33, 33)',
       cursor: 'pointer',

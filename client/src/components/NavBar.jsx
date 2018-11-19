@@ -56,7 +56,7 @@ class NavBar extends React.Component {
 
   handleToggle() {
     this.toggleActive()
-    // document.getElementById("body").classList.toggle('nav-open');
+    document.getElementById("body").classList.toggle('nav-open');
   }
 
   render() {
@@ -89,11 +89,11 @@ class NavBar extends React.Component {
                 </div>
               </div>
             </div>
-
-            <div className="inline">
-              <div style={{zIndex: 9999, position: 'absolute'}}>PollPlay</div>
+            <div className="head">
+              <div id="head">
+                <div>PollPlay</div>
+              </div>
             </div>
-
           </AppBar>
         </div>
 
@@ -101,6 +101,7 @@ class NavBar extends React.Component {
         <div className={this.state.active ? "side-nav active" : "side-nav hidden"}>
           <div className="nav-logo">
             <div>Logo Goes Here</div>
+            <img />
           </div>
           <div className="nav-links">
             {profile}

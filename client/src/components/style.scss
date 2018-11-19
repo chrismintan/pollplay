@@ -14,7 +14,7 @@
 
 .side-nav.active {
 	z-index: 50;
-  background: transparent;
+  background: linear-gradient(to top, black, #4C4C4BFF);
   transform: translateX(0);
   position: absolute;
 }
@@ -79,15 +79,15 @@
   box-shadow: none;
 }
 
-.body.nav-open .nav-toggle:before {
-	/* How big the circle is */
-  width: 1000px;
-  height: 1000px;
-  /* After toggle */
-  background-image: linear-gradient( to right, rgba(50, 50, 50, 1), rgba(80, 80, 80, 0.8) );
-  cursor: default;
-  z-index: 10;
-}
+// .body.nav-open .nav-toggle:before {
+// 	/* How big the circle is */
+//   width: 1000px;
+//   height: 1000px;
+//   /* After toggle */
+//   background-image: linear-gradient( to right, rgba(50, 50, 50, 1), rgba(80, 80, 80, 0.8) );
+//   cursor: default;
+//   z-index: 10;
+// }
 
 .body.nav-open .nav-toggle .icon {
   width: 0;
@@ -241,10 +241,20 @@
 }
 
 .nav-toggle .icon {
-	top: 20px;
+	top: 18px;
 	left: 5px;
 }
 
 .inline {
 	display: relative;
 }
+
+.head {
+	margin-left: 60px;
+	vertical-align: center;
+	line-height: 60px;
+	font-family: cursive;
+	font-size: 25px;
+	font-weight: 900;
+}
+

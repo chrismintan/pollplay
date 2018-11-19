@@ -51,8 +51,6 @@ router.post('/createRoom', (req, res) => {
   });
 });
 
-router.post
-
 router.get('/search', (req, res) => {
   const token = req.query.token
   const query = req.query.query;
@@ -63,7 +61,7 @@ router.get('/search', (req, res) => {
     params: {
       q: query,
       type: "track",
-      limit: 20
+      limit: 50
     }
   })
   .then(({data: {tracks}}) => {
@@ -78,7 +76,6 @@ router.get('/search', (req, res) => {
 router.get('/searchArtist', (req, res) => {
   const token = req.query.token
   const query = req.query.query;
-  console.log(query)
   axios.get('https://api.spotify.com/v1/search', {
     headers: {
       Authorization: `Bearer ${token}`
@@ -86,7 +83,7 @@ router.get('/searchArtist', (req, res) => {
     params: {
       q: `artist: "${query}"`,
       type: "track",
-      limit: 20
+      limit: 50
     }
   })
   .then(({data: {tracks}}) => {
@@ -122,18 +119,5 @@ router.post('/saveSong', (req,res) => {
     }
   });
 });
-
-router.get('/testing', (req, res) => {
-  let roomId = '1'
-  db.getSonginRoom(roomId, function(err, data) {
-    if ( err ) {
-      console.log('Error:', err);
-      res.sendStatus(500);
-    } else {
-      console.log('Success!', data);
-      res.end()
-    }
-  })
-})
 
 module.exports = router;

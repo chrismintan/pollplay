@@ -9,6 +9,7 @@ import styles from './style.scss';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Cookies from 'universal-cookie';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 const styling = theme => ({
   root: {
@@ -16,6 +17,8 @@ const styling = theme => ({
   },
   paper: {
     textAlign: 'center',
+    margin: 0,
+    padding: 0,
   },
 });
 
@@ -200,7 +203,7 @@ class Main extends React.Component {
       reactThis.socket.emit(roomId, playBackData)
 
       // Checking to see if next song should be played
-      if ( playBackData.item.duration_ms - playBackData.progress_ms <= 10000 && reactThis.state.nextQueued == false ) {
+      if ( (playBackData.item.duration_ms - playBackData.progress_ms) <= 10000 && (reactThis.state.nextQueued == false) ) {
         let timeLeft = playBackData.item.duration_ms - playBackData.progress_ms - 1500;
         reactThis.setState({
           nextQueued: true,
@@ -317,6 +320,11 @@ class Main extends React.Component {
     let roomID = this.state.roomID;
     let trackURI = this.state.songBank[0].trackURI;
     let nextTrackURI = song
+    this.setState({
+      nextQueued: false,
+    })
+
+    console.log(this.state)
 
     // Removing played song from the DB pool
     if ( this.state.host == true ) {
@@ -364,30 +372,34 @@ class Main extends React.Component {
     const { classes } = this.props;
       // <button onClick={this.testing}>TEST BUTTON!</button>
     return (
-      <div>
-
+      <div className="contain">
+        <CssBaseline />
         <div className='mainbody'>
           <div className={classes.roots}>
-            <Grid container spacing={24}>
+            <Grid container spacing={0} padding={0}>
 
-              <Grid item xs={6} spacing={24}>
-                <div className={classes.paper}>
-                  <CurrentSong {...this.state} />
-                </div>
+              <Grid item xs={6} spacing={0}>
+
+                  <div className={classes.paper}>
+                    <CurrentSong {...this.state} />
+                  </div>
+
               </Grid>
 
+              <Grid item xs={3} spacing={0} padding={0}>
 
-              <Grid item xs={3} spacing={24}>
-                <div className={classes.paper}>
-                  <SongList songBank={this.state.songBank} upVoteSong={this.upVoteSong} />
-                </div>
+                  <div className={classes.paper}>
+                    <SongList songBank={this.state.songBank} upVoteSong={this.upVoteSong} />
+                  </div>
+
               </Grid>
 
+              <Grid item xs={3} spacing={0} padding={0}>
 
-              <Grid item xs={3} spacing={24}>
-                <div className={classes.paper}>
-                  <SearchBar addSong={this.addSong} songBank={this.state.songBank} access_token={this.state.access_token} />
-                </div>
+                  <div className={classes.paper}>
+                    <SearchBar addSong={this.addSong} songBank={this.state.songBank} access_token={this.state.access_token} />
+                  </div>
+
               </Grid>
 
             </Grid>

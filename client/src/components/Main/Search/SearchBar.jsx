@@ -7,6 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import { createMuiTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
+import styling from './styling.scss';
 // import IconButton from '@material-ui/core/IconButton';
 // import ActionSearchIcon from '@material-ui/icons/search';
 
@@ -106,6 +107,7 @@ class SearchBar extends React.Component {
 
     let reactThis = this
 
+    console.log('Searching:')
     axios.get('/api/searchArtist', {
       params: {
         query: reactThis.state.artistInput,
@@ -129,10 +131,11 @@ class SearchBar extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <div>
+      <div className="contain">
+      <div className="contain2">
         <div style={{ position: 'fixed' }}>
-        <div style={{ lineHeight: '53.75px', backgroundColor: 'rgba(69,69,69)', position: 'fixed', zIndex: 100, display: 'block', width: '100%' }}>i</div>
-          <form style={{ width: '45%', display: 'inline-block', marginRight: 5}}>
+        <div className="top" style={{ lineHeight: '53.75px', backgroundColor: 'rgba(69,69,69)', position: 'fixed', zIndex: 100, display: 'block', width: '100%' }}></div>
+          <form style={{ width: '48%', display: 'inline-block', float: 'left'}}>
             <TextField
               fullWidth
               onKeyPress={(event) => {
@@ -159,10 +162,11 @@ class SearchBar extends React.Component {
                   width: '100%',
                   color: '#E6E6E5FF',
                   zIndex: 200,
+                  fontWeight: 150,
                 } }} />
           </form>
 
-          <form style={{ width: '45%', display: 'inline-block', marginLeft: 5}}>
+          <form style={{ width: '48%', display: 'inline-block', marginLeft: 5}}>
             <TextField
               fullWidth
               onKeyPress={(event) => {
@@ -180,7 +184,7 @@ class SearchBar extends React.Component {
                 },
               }}
               style={{ width: '100%', display: 'inline-block'}}
-              label='Search by Track Name...'
+              label='Search by Track...'
               InputLabelProps={{
                 style: {
                   textOverflow: 'ellipsis',
@@ -189,13 +193,15 @@ class SearchBar extends React.Component {
                   width: '100%',
                   color: '#E6E6E5FF',
                   zIndex: 200,
+                  fontWeight: 150,
                 } }}
                 />
           </form>
         </div>
-
-      <div style={{ lineHeight: '53.75px', backgroundColor: 'rgba(69,69,69)' }}>i</div>
+      <div className="scroll">
       <DropDownSongList spotifyResults={this.state.spotifyResults} addSong={this.props.addSong} songBank={this.props.songBank} />
+      </div>
+    </div>
     </div>
     )
   }

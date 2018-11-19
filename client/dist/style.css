@@ -1,4 +1,12 @@
-/*html {
+html {
 	overflow: hidden;
+
 }
-*/
+
+html, body {
+	padding: 0;
+	margin: 0;
+	height: 100vh;
+	background: linear-gradient(to top, black, #4C4C4BFF);
+	font-family: "Helvetica Neue", Helvetica;
+}

@@ -46,7 +46,6 @@ class CurrentSong extends React.Component {
   render() {
     return (
       <div className='current-song' id='currentSong'>
-      <div style={{ lineHeight: '53.75px' }}>Upvote Songs!</div>
           <canvas id="canvas"></canvas>
           <div id="toast" className="toast"><span id="text"></span><span id="text2"></span></div>
           <div className="trackposition" id="trackposition"><div className="fill" id="trackpositionfill"></div></div>

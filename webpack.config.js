@@ -21,6 +21,11 @@ module.exports = {
         }
       },
       {
+        test: /\.(jpe?g|png|gif|mp3)$/i,
+        include: SRC,
+        loaders: ['file-loader']
+      },
+      {
         test: /\.scss$/,
         use: [
           {

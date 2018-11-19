@@ -74,18 +74,6 @@ const updateAccessToken = async (req, res, next) => {
 
 router.use(accessToken, getNewAccessToken, updateAccessToken);
 
-/* Switched to other route so non hosts can instantly search
-router.get('/rooms/:roomId', (req, res) => {
-  db.getRoomData({ room: req.query.query }, (err, result) => {
-    if ( err ) {
-      console.log(err);
-    } else {
-      res.json(result)
-    }
-  })
-})
-*/
-
 router.get('/search', (req, res) => {
   const token = req.query.token
   const query = req.query.query;
@@ -110,33 +98,6 @@ router.get('/search', (req, res) => {
 
 router.get('/searchArtists', (req, res) => {
   const query = req.query.query;
-  // db.getUserByRoomId(req.session.roomId, (err, data) => {
-  //   if (err) {
-  //     console.log('we messed up our getting user:', err)
-  //     res.sendStatus(500)
-  //   } else {
-  //     const [user] = data;
-  //     let accessToken = user.access_token;
-
-  //     axios.get('https://api.spotify.com/v1/search', {
-  //       headers: {
-  //         Authorization: `Bearer ${curAccessToken}`
-  //       },
-  //       params: {
-  //         q: query,
-  //         type: "track",
-  //         limit: 10
-  //       }
-  //     })
-  //     .then(({data: {tracks}}) => {
-  //       res.json(tracks);
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //       res.sendStatus(500);
-  //     });
-  //   }
-  // })
   axios.get('https://api.spotify.com/v1/search', {
     headers: {
       Authorization: `Bearer ${curAccessToken}`
@@ -148,6 +109,7 @@ router.get('/searchArtists', (req, res) => {
     }
   })
   .then(({data: {tracks}}) => {
+    console.log(tracks)
     res.json(tracks);
   })
   .catch(err => {
@@ -175,24 +137,6 @@ router.get('/currentSong', async (req, res) => {
     res.sendStatus(500);
   }
 })
-
-router.post('/playNextSong', (req, res) => {
-  const options = {
-    method: 'POST',
-    url: 'https://api.spotify.com/v1/me/player/next',
-    headers: {
-      Authorization: `Bearer ${curAccessToken}`
-    }
-  };
-
-  try {
-    axios(options);
-    res.json({worked: 'Success!'});
-  } catch(err) {
-    console.log(err);
-    res.sendStatus(500);
-  }
-});
 
 router.put('/playNext', (req, res) => {
   console.log('REQ:', req)
@@ -222,75 +166,6 @@ router.put('/playNext', (req, res) => {
     console.log(err);
     res.sendStatus(500);
   }
-})
-
-router.put('/testing', (req, res) => {
-  let nextTrack = req.body.nextTrack
-  console.log(nextTrack)
-  const options = {
-    method: 'PUT',
-    url: 'https://api.spotify.com/v1/me/player/play',
-    headers: {
-      Authorization: `Bearer ${curAccessToken}`,
-      Accept: "application/json",
-      'Content-Type': "application/json"
-    },
-    data: {
-      "uris": [nextTrack],
-      "offset": {
-        "position": 0
-      },
-      "position_ms": 0
-    }
-  };
-  try {
-    axios(options);
-    res.end()
-  } catch (err) {
-    console.log('hererere')
-    console.log(err);
-    res.sendStatus(500);
-  }
-})
-
-router.post('/initPlaylist', (req, res) => {
-  fetch(`https://api.spotify.com/v1/users/${spotify_id}/playlists`, {
-    headers: {
-      'Authorization': `Bearer ${curAccessToken}`
-    },
-    contentType: 'application/json',
-    method: 'POST',
-    body: JSON.stringify({
-      "name": `PollPlay Playlist!`,
-      "description": `Vote Away!`
-    })
-  }).then(playlist => {
-    console.log(playlist);
-    return playlist.json();
-  }).catch(err => {
-    console.log(err);
-  })
-  // const options = {
-  //   method: 'POST',
-  //   url: `https://api.spotify.com/v1/users/${spotify_id}/playlists`,
-  //   headers: {
-  //     Authorization: `Bearer ${curAccessToken}`,
-  //   },
-  //   contentType: 'application/json',
-  //   params: {
-  //     name: 'PollPlay Playlist!',
-  //     description: 'Vote Away!',
-  //   }
-  // };
-
-  // try {
-  //   const {data} = await axios(options);
-  //   console.log('PLAYLIST INIT   :', data);
-  //   res.send(data)
-  // } catch(err) {
-  //   console.log(err);
-  //   res.sendStatus(500);
-  // }
 })
 
 module.exports = router;
