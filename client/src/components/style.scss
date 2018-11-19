@@ -17,6 +17,8 @@
   background: linear-gradient(to top, black, #4C4C4BFF);
   transform: translateX(0);
   position: absolute;
+  padding: 0;
+  margin: 0;
 }
 
 .top-bar {
@@ -35,17 +37,23 @@
 }
 
 .nav-logo {
-  width: 90px;
+  width: 100%;
 }
 
-.nav-logo>img {
-  max-height: 100%;
-  max-width:100%;
+.profile-image {
+  max-height: 80%;
+  max-width: 80%;
+  border-radius: 100px;
+  margin-left: 23px;
+  margin-top: 23px;
 }
 
-.nav-links {
+.nav-options {
   display: flex;
   flex-direction: column;
+  border-radius: 10px;
+  // margin-left: 23px;
+  // margin-top: 23px;
 }
 
 .nav-link {
@@ -55,7 +63,21 @@
   z-index: 50;
 }
 
-.nav-link:hover {
+.opts {
+  margin-left: 23px;
+  margin-top: 15px;
+  font-size: 17px;
+  font-weight: 400;
+}
+
+.profile-name {
+  margin-left: 23px;
+  margin-top: 15px;
+  font-size: 25px;
+	font-weight: 800;
+}
+
+.opts:hover {
   color: rgba(255, 255, 255, 1);
   cursor: pointer;
 }
@@ -256,5 +278,11 @@
 	font-family: cursive;
 	font-size: 25px;
 	font-weight: 900;
+}
+
+.logo {
+	border-radius: 25px;
+	display: block;
+	margin: auto;
 }
 

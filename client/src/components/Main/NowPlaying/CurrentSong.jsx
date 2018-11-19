@@ -1,6 +1,18 @@
 import React from 'react';
 import Cookies from 'universal-cookie';
 import styles from './style.scss'
+import SkipNextIcon from '@material-ui/icons/SkipNext'
+import IconButton from '@material-ui/core/IconButton';
+import { withStyles } from '@material-ui/core/styles';
+
+const styling = {
+  root: {
+    color: 'white',
+    position: 'fixed',
+    display: 'inline-block',
+  },
+}
+
 
 class CurrentSong extends React.Component {
   constructor(props) {
@@ -8,6 +20,11 @@ class CurrentSong extends React.Component {
     this.state = {
       init: false,
     }
+    this.testing = this.testing.bind(this);
+  }
+
+  testing() {
+    console.log('works')
   }
 
   componentDidMount() {
@@ -44,14 +61,32 @@ class CurrentSong extends React.Component {
 
 
   render() {
+    const { classes } = this.props
+    let nextButton;
+    if ( this.props.host == true ) {
+      nextButton = (
+        <IconButton onClick={this.props.skipToNext}>
+          <SkipNextIcon className={classes.root} />
+        </IconButton>
+      )
+    } else {
+      nextButton = (
+        <div></div>
+      )
+    }
+
     return (
       <div className='current-song' id='currentSong'>
           <canvas id="canvas"></canvas>
-          <div id="toast" className="toast"><span id="text"></span><span id="text2"></span></div>
+          <div id="toast" className="toast">
+            <span id="text"></span>
+            <span style={{display: 'inline'}} id="text2"></span>&nbsp;
+            {nextButton}
+          </div>
           <div className="trackposition" id="trackposition"><div className="fill" id="trackpositionfill"></div></div>
       </div>
     )
   }
 }
 
-export default CurrentSong;
+export default withStyles(styling)(CurrentSong);

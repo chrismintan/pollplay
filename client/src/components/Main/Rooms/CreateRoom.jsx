@@ -6,14 +6,25 @@ import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import classNames from 'classnames';
 import TouchRipple from '@material-ui/core/ButtonBase/TouchRipple';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Favorite from '@material-ui/icons/Favorite';
 import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
-import red from '@material-ui/core/colors/red';
-import green from '@material-ui/core/colors/green';
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import RedoIcon from '@material-ui/icons/Redo';
+import FormControl from '@material-ui/core/FormControl';
+
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const styles = theme => ({
+  title: {
+    marginTop: '60px',
+    fontSize: '50px',
+    color: '#CCCCCBFF',
+  },
   root: {
     flexGrow: 1,
   },
@@ -21,16 +32,25 @@ const styles = theme => ({
     textAlign: 'center',
     width: '100%',
   },
+  top: {
+    marginTop: 30,
+    color: '#FEFEFEFF',
+  },
+  bot: {
+    marginTop: 30,
+    color: '#FEFEFEFF',
+  },
   textFieldCreate: {
-    color: '#FEFEFE',
-    borderBottom: '3px solid #1db954',
-    marginBottom: 5,
+    // marginTop: 20,
+    color: '#FEFEFEFF',
+    borderBottom: '1px solid #FEFEFEFF',
+    // marginBottom: 5,
     width: '100%',
 
   },
   textFieldJoin: {
-    color: '#E6E6E5',
-    borderBottom: '2px solid #4DB6AC',
+    color: '#FEFEFEFF',
+    borderBottom: '1px solid #FEFEFEFF',
     marginBottom: 5,
     width: '100%',
 
@@ -40,7 +60,6 @@ const styles = theme => ({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     width: '100%',
-    color: 'red',
     textAlign: 'center',
   },
   hidden: {
@@ -53,11 +72,13 @@ const styles = theme => ({
       backgroundColor: 'white',
     }
   },
-  root: {
-    color: red[600],
-    '&$checked': {
-      color: red[500],
-    },
+  icon: {
+    color: 'white',
+    marginTop: '25px',
+  },
+  iconTop: {
+    color: 'white',
+    marginTop: '17px',
   },
 });
 
@@ -68,17 +89,12 @@ class CreateRoom extends React.Component {
       input: '',
       roomCode: '',
       spotifyId: '',
-      counter: 0,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleRoomCodeChange = this.handleRoomCodeChange.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
-
-    this.testButton = this.testButton.bind(this);
-    this.clear = this.clear.bind(this);
-    this.persistentState = this.persistentState.bind(this);
   }
 
   componentWillUnmount() {
@@ -88,7 +104,6 @@ class CreateRoom extends React.Component {
   }
 
   componentDidMount() {
-    this.persistentState()
     axios.get('/auth/isLoggedIn')
     .then(({data}) => {
       this.props.setUserID(data.userId);
@@ -137,39 +152,6 @@ class CreateRoom extends React.Component {
     this.props.history.push(`/rooms/${roomCode}`);
   }
 
-  testButton(event) {
-    event.preventDefault();
-    let newCount = this.state.counter + 1
-    this.setState({
-      counter: this.state.counter + 1
-    })
-    localStorage.setItem('counter', JSON.stringify(newCount));
-  }
-
-  clear(event) {
-    event.preventDefault();
-    localStorage.clear();
-  }
-
-  persistentState() {
-    for ( let counter in this.state ) {
-      if ( localStorage.hasOwnProperty('counter') ) {
-        let value = localStorage.getItem('counter');
-
-        try {
-          value = JSON.parse(value);
-          this.setState({
-            counter: value,
-          });
-        } catch(e) {
-          this.setState({
-            counter: value,
-          })
-        }
-      }
-    }
-  }
-
   render() {
     const { classes } = this.props;
 
@@ -178,70 +160,88 @@ class CreateRoom extends React.Component {
       component = (
         <div>
           <form onSubmit={this.handleClick}>
-            <TextField
-              value={this.state.input}
-              onChange={this.handleInputChange}
-              fullWidth
-              InputProps={{
-                disableUnderline: true,
-                classes: {
-                  input: classes.textFieldCreate,
-                },
-              }}
-              // hintStyle={{ width: '600px', textAlign: 'center' }}
-              style={{ width: '33%', paddingTop: 15 }}
-              label='Create a room!'
-              InputLabelProps={{
-                style: {
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  width: '100%',
-                  color: '#1db954',
-                  fontSize: 30,
-                }
-              }}
-            />
+            <FormControl style={{ width: '33%' }} className={classes.textFieldCreate}>
+              <TextField
+                value={this.state.input}
+                onChange={this.handleInputChange}
+                fullWidth
+                InputProps={{
+                  disableUnderline: true,
+                  classes: {
+                    input: classes.top,
+                  },
+                  endAdornment: (
+                    <InputAdornment variant="filled" position="end">
+                      <IconButton>
+                        <AddCircleIcon className={classes.iconTop}/>
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+                label='Create a room!'
+                InputLabelProps={{
+                  style: {
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    width: '100%',
+                    color: '#FEFEFEFF',
+                    fontSize: 30,
+                    fontWeight: 'lighter',
+                    marginTop: 15,
+                  }
+                }}
+              />
+            </FormControl>
           </form>
         </div>
       )
     } else {
-      component = <a style={{ color: "#1db954", fontStyle: 'bold' }} href='/auth/login'>Please Login to Create a Room!</a>
+      component = <a style={{ color: "#1db954", fontStyle: 'bold', fontSize: 30, lineHeight: '100px' }} href='/auth/login'>Please Login to Create a Room!</a>
     }
 
     return (
       <div>
         <Grid container spacing={0}>
           <div className={classes.paper}>
+          <h1 className={classes.title}>Welcome to PollPlay!</h1>
             {component}
             <div>
-              <p style={{ color: "#FB0106FF", fontSize: 24, marginTop: 40 }}>or join an existing room!</p>
               <div>
-                <form>
-                  <TextField
-                    value={this.state.roomCode}
-                    onChange={this.handleRoomCodeChange}
-                    fullWidth
-                    InputProps={{
-                      disableUnderline: true,
-                      classes: {
-                        input: classes.textFieldJoin,
-                      },
-                    }}
-                    // hintStyle={{ width: '600px', textAlign: 'center' }}
-                    style={{ width: '27%', paddingTop: 10 }}
-                    label='or join a room!'
-                    InputLabelProps={{
-                      style: {
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        width: '100%',
-                        color: '#4DB6AC',
-                        fontSize: 27,
-                      }
-                    }}
-                  />
+                <form onClick={this.joinRoom}>
+                  <FormControl style={{ width: '33%' }} className={classes.textFieldCreate}>
+                    <TextField
+                      value={this.state.roomCode}
+                      onChange={this.state.handleRoomCodeChange}
+                      fullWidth
+                      InputProps={{
+                        disableUnderline: true,
+                        classes: {
+                          input: classes.top,
+                        },
+                        endAdornment: (
+                          <InputAdornment variant="filled" position="end">
+                            <IconButton onClick={this.joinRoom} >
+                              <RedoIcon className={classes.icon}/>
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }}
+                      label='or join a room!'
+                      InputLabelProps={{
+                        style: {
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          width: '100%',
+                          color: '#FEFEFEFF',
+                          fontSize: 20,
+                          fontWeight: 'lighter',
+                          marginTop: 25,
+                        }
+                      }}
+                    />
+                  </FormControl>
                 </form>
               </div>
             </div>

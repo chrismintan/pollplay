@@ -36,11 +36,6 @@ router.get('/spotify/redirect', passport.authenticate('spotify', {failureRedirec
   res.redirect('/');
 });
 
-// router.post('/login', passport.authenticate('local', {failureRedirect: 'login'}), (req, res) => {
-//   console.log('HEREEE!!')
-//   req.session.key = req.session.passport.user[0].id
-// })
-
 router.get('/isLoggedIn', (req, res) => {
 
   if ( typeof req.session.passport != "undefined" ) {
@@ -57,7 +52,6 @@ router.get('/isLoggedIn', (req, res) => {
   } else {
     res.send( spotify_id == null )
   }
-
 
 });
 

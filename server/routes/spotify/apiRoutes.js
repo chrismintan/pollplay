@@ -139,7 +139,6 @@ router.get('/currentSong', async (req, res) => {
 })
 
 router.put('/playNext', (req, res) => {
-  console.log('REQ:', req)
   let nextTrack = req.body.nextTrackURI
   console.log(nextTrack)
   const options = {

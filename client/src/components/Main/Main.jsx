@@ -28,7 +28,6 @@ class Main extends React.Component {
     this.state = {
       host: false,
       songBank: [],
-      nextSong: "spotify:track:746bHsY27aWTMYpoxqECOm",
       roomID: null,
       access_token: null,
       spotify_id: null,
@@ -68,6 +67,9 @@ class Main extends React.Component {
     this.emitUpdate = this.emitUpdate.bind(this);
 
     this.nextSong = this.nextSong.bind(this);
+
+    // Skip to next song (host only
+    this.skipToNext = this.skipToNext.bind(this);
 
     // For testing functions
     this.testing = this.testing.bind(this);
@@ -330,7 +332,6 @@ class Main extends React.Component {
     if ( this.state.host == true ) {
       await axios.put('/spotify/playNext', {nextTrackURI})
       .then(({data}) => {
-        console.log('Next song!')
         reactThis.removeSong(roomID, trackURI);
         reactThis.socket.emit(roomID, { nextSong: true } )
       })
@@ -348,11 +349,16 @@ class Main extends React.Component {
       }
     })
     .then(({data}) => {
-      console.log('Removed successfully!')
+      console.log('Next!')
     })
     .catch(function(error) {
       console.log('Removal failed.', error)
     })
+  }
+
+  skipToNext() {
+    console.log('CLICKED!')
+    this.nextSong(this.state.songBank[0].trackURI);
   }
 
   testing() {
@@ -379,27 +385,24 @@ class Main extends React.Component {
             <Grid container spacing={0} padding={0}>
 
               <Grid item xs={6} spacing={0}>
+                <div className={classes.paper}>
+                  <CurrentSong skipToNext={this.skipToNext} {...this.state} />
+                </div>
+                <div>
 
-                  <div className={classes.paper}>
-                    <CurrentSong {...this.state} />
-                  </div>
-
+                </div>
               </Grid>
 
               <Grid item xs={3} spacing={0} padding={0}>
-
-                  <div className={classes.paper}>
-                    <SongList songBank={this.state.songBank} upVoteSong={this.upVoteSong} />
-                  </div>
-
+                <div className={classes.paper}>
+                  <SongList songBank={this.state.songBank} upVoteSong={this.upVoteSong} />
+                </div>
               </Grid>
 
               <Grid item xs={3} spacing={0} padding={0}>
-
-                  <div className={classes.paper}>
-                    <SearchBar addSong={this.addSong} songBank={this.state.songBank} access_token={this.state.access_token} />
-                  </div>
-
+                <div className={classes.paper}>
+                  <SearchBar addSong={this.addSong} songBank={this.state.songBank} access_token={this.state.access_token} />
+                </div>
               </Grid>
 
             </Grid>

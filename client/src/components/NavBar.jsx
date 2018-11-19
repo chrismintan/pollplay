@@ -66,8 +66,8 @@ class NavBar extends React.Component {
     if ( this.state.profilePic != '' && this.state.displayName != '' ) {
       profile = (
         <div className="nav-link">
-          <img className="test" src={this.state.profilePic} alt='Profile Pic'/>
-          <div>{this.state.displayName}</div>
+          <img className="profile-image" src={this.state.profilePic} alt='Profile Pic'/>
+          <div className="profile-name">{this.state.displayName}</div>
         </div>
       )
     } else {
@@ -99,17 +99,13 @@ class NavBar extends React.Component {
 
 
         <div className={this.state.active ? "side-nav active" : "side-nav hidden"}>
-          <div className="nav-logo">
-            <div>Logo Goes Here</div>
-            <img />
-          </div>
-          <div className="nav-links">
+          <div className="nav-options">
             {profile}
-            <a className="nav-link" href="/">Home</a>
+            <a className="nav-link opts" href="/">Home</a>
             {this.state.userId ?
-              <a className="nav-link" href="/auth/logout">Logout</a>
+              <a className="nav-link opts" href="/auth/logout">Logout</a>
             :
-              <a className="nav-link" href="/auth/login">Login</a>
+              <a className="nav-link opts" href="/auth/login">Login</a>
             }
           </div>
         </div>

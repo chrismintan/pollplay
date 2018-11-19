@@ -103,11 +103,9 @@ class SearchBar extends React.Component {
   }
 
   handleArtistSearch(event) {
-    console.log('search!')
 
     let reactThis = this
 
-    console.log('Searching:')
     axios.get('/api/searchArtist', {
       params: {
         query: reactThis.state.artistInput,
