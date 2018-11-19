@@ -91,9 +91,11 @@ class NavBar extends React.Component {
             </div>
             <div className="head">
               <div id="head">
-                <div>PollPlay</div>
+                <div style={{display: 'inline-block'}}>PollPlay</div>
+                <div  style={{display: 'inline-block', float: 'right'}}>PollPlay</div>
               </div>
             </div>
+
           </AppBar>
         </div>
 

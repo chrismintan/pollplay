@@ -65,7 +65,7 @@ class SearchBar extends React.Component {
       trackInput: input,
     })
     if ( input.length > 3 ) {
-      this.handleTrackSearch();
+      this.handleTrackSearch(input);
     };
   }
 
@@ -75,17 +75,18 @@ class SearchBar extends React.Component {
       artistInput: input,
     })
     if ( input.length > 3 ) {
-      this.handleArtistSearch();
+      this.handleArtistSearch(input);
     };
   }
 
-  handleTrackSearch(event) {
+  handleTrackSearch(input) {
+    console.log(input)
 
     let reactThis = this
 
     axios.get('/api/search', {
       params: {
-        query: reactThis.state.trackInput,
+        query: input,
         token: reactThis.props.access_token
       }
     })
@@ -102,13 +103,14 @@ class SearchBar extends React.Component {
     })
   }
 
-  handleArtistSearch(event) {
+  handleArtistSearch(input) {
+    console.log(input)
 
     let reactThis = this
 
     axios.get('/api/searchArtist', {
       params: {
-        query: reactThis.state.artistInput,
+        query: input,
         token: reactThis.props.access_token
       }
     })
@@ -139,7 +141,7 @@ class SearchBar extends React.Component {
               onKeyPress={(event) => {
                 if ( event.key == 'Enter' ) {
                   event.preventDefault();
-                  this.handleArtistSearch();
+                  this.handleArtistSearch(this.state.artistInput);
                 }
               }}
               style={{ width: '100%', display: 'inline-block'}}
@@ -170,7 +172,7 @@ class SearchBar extends React.Component {
               onKeyPress={(event) => {
                 if ( event.key == 'Enter' ) {
                   event.preventDefault();
-                  this.handleTrackSearch();
+                  this.handleTrackSearch(this.state.trackInput);
                 }
               }}
               value={this.state.trackInput}
