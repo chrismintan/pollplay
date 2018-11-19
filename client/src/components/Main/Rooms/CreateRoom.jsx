@@ -172,7 +172,7 @@ class CreateRoom extends React.Component {
                   },
                   endAdornment: (
                     <InputAdornment variant="filled" position="end">
-                      <IconButton>
+                      <IconButton onClick={this.handleClick}>
                         <AddCircleIcon className={classes.iconTop}/>
                       </IconButton>
                     </InputAdornment>
@@ -208,7 +208,7 @@ class CreateRoom extends React.Component {
             {component}
             <div>
               <div>
-                <form onClick={this.joinRoom}>
+                <form onSubmit={this.joinRoom}>
                   <FormControl style={{ width: '33%' }} className={classes.textFieldCreate}>
                     <TextField
                       value={this.state.roomCode}
