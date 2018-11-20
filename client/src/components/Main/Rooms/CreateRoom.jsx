@@ -16,8 +16,14 @@ import InputLabel from '@material-ui/core/InputLabel';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RedoIcon from '@material-ui/icons/Redo';
 import FormControl from '@material-ui/core/FormControl';
-
+import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Snackbar from '@material-ui/core/Snackbar';
+import ErrorIcon from '@material-ui/icons/Error';
+
+const variantIcon = {
+  error: ErrorIcon,
+}
 
 const styles = theme => ({
   title: {
@@ -80,21 +86,39 @@ const styles = theme => ({
     color: 'white',
     marginTop: '17px',
   },
+  margin: {
+    margin: '10px',
+  },
+  error: {
+    background: 'rgb(186, 38, 26)',
+    textAlight: 'center',
+    display: 'block',
+  }
 });
+
 
 class CreateRoom extends React.Component {
   constructor() {
     super();
     this.state = {
       input: '',
-      roomCode: '',
+      roomInput: '',
       spotifyId: '',
+      createError: false,
+      joinError: false,
+      vertical: 'top',
+      horizontal: 'center',
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleRoomCodeChange = this.handleRoomCodeChange.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.throwCreateError = this.throwCreateError.bind(this);
+    this.throwJoinError = this.throwJoinError.bind(this);
+    this.charError = this.charError.bind(this);
+    this.createAndRedirect = this.createAndRedirect.bind(this);
   }
 
   componentWillUnmount() {
@@ -104,10 +128,11 @@ class CreateRoom extends React.Component {
   }
 
   componentDidMount() {
+    let reactThis = this;
     axios.get('/auth/isLoggedIn')
     .then(({data}) => {
-      this.props.setUserID(data.userId);
-      this.setState({
+      reactThis.props.setUserID(data.userId);
+      reactThis.setState({
         spotifyId: data.spotify_id,
       })
     })
@@ -118,42 +143,115 @@ class CreateRoom extends React.Component {
 
   handleInputChange(event) {
     this.setState({
-      input: event.target.value,
+      input: event.target.value.toLowerCase(),
     })
   }
 
+  // Creating a room input - this.state.input function - this.state.handleClick
   handleClick(event) {
+    let reactThis = this;
     event.preventDefault();
+    let roomId = this.state.input;
 
-    if ( this.state.input.length > 4 ) {
-      axios.post('/api/createRoom', {
-        roomName: this.state.input,
-        spotifyId: this.state.spotifyId,
+    if ( this.state.input.length < 5 ) {
+      this.charError();
+    } else if ( this.state.input.length > 4 ) {
+      axios.get(`/api/rooms/${this.state.input}`, {
+        params: {
+          roomId: roomId
+        }
       })
       .then(({data}) => {
-        this.props.setRoomID(data);
-        this.props.history.push(`/rooms/${data}`);
+        if ( data.length != 0 ) {
+          if ( data[0].spotify_id == reactThis.state.spotifyId ) {
+            reactThis.props.setRoomID(roomId);
+            reactThis.props.history.push(`/rooms/${roomId}`);
+          } else {
+            this.throwCreateError();
+          }
+        } else if ( data.length == 0 ) {
+          this.createAndRedirect();
+        }
       })
       .catch(err => {
-        console.log(err);
-      });
+        console.error()
+      })
     }
   }
 
-  handleRoomCodeChange(event) {
-    this.setState({
-      roomCode: event.target.value,
+  createAndRedirect() {
+    let reactThis = this;
+    axios.post('/api/createRoom', {
+      roomName: this.state.input.toLowerCase(),
+      spotifyId: this.state.spotifyId,
+    })
+    .then(({data}) => {
+      reactThis.props.setRoomID(data);
+      reactThis.props.history.push(`/rooms/${data}`);
+    })
+    .catch(err => {
+      console.log(err);
     });
   }
 
-  joinRoom(event) {
-    let roomCode = this.state.roomCode;
-    this.props.setRoomID(roomCode);
-    this.props.history.push(`/rooms/${roomCode}`);
+
+  handleRoomCodeChange(event) {
+    this.setState({
+      roomInput: event.target.value.toLowerCase(),
+    });
+  }
+
+  // Joining a room Input - this.state.roomInput function - this.joinRoom
+  async joinRoom(event) {
+    event.preventDefault()
+    let reactThis = this;
+    let roomCode = this.state.roomInput.toLowerCase();
+
+    axios.get(`/api/rooms/${roomCode}`, {
+      params: {
+        roomId: roomCode,
+      }
+    })
+    .then(({data}) => {
+      if ( data.length == 0 ) {
+        reactThis.throwJoinError
+      } else {
+        reactThis.props.setRoomID(roomCode);
+        reactThis.props.history.push(`/rooms/${roomCode}`);
+      }
+    })
+    .catch(err => {
+      console.log('error!', err)
+    })
+  }
+
+  throwCreateError() {
+    this.setState({
+      createError: true,
+    })
+  }
+
+  throwJoinError() {
+    this.setState({
+      joinError: true,
+    })
+  }
+
+  handleClose() {
+    this.setState({
+      open: false,
+    })
+  }
+
+  charError() {
+    this.setState({
+      charError: true,
+    })
   }
 
   render() {
     const { classes } = this.props;
+    const { vertical, horizontal, open } = this.state;
 
     let component;
     if (this.props.userID) {
@@ -163,6 +261,11 @@ class CreateRoom extends React.Component {
             <FormControl style={{ width: '33%' }} className={classes.textFieldCreate}>
               <TextField
                 value={this.state.input}
+                onKeyPress={(e) => {
+                 if ( e.which == 32 ) {
+                  e.preventDefault();
+                 }
+                }}
                 onChange={this.handleInputChange}
                 fullWidth
                 InputProps={{
@@ -211,9 +314,15 @@ class CreateRoom extends React.Component {
                 <form onSubmit={this.joinRoom}>
                   <FormControl style={{ width: '33%' }} className={classes.textFieldCreate}>
                     <TextField
-                      value={this.state.roomCode}
-                      onChange={this.state.handleRoomCodeChange}
+                      value={this.state.roomInput}
+                      onChange={this.handleRoomCodeChange}
                       fullWidth
+                      onKeyPress={(e) => {
+                       if ( e.which == 32 ) {
+                        e.preventDefault();
+                       }
+                      }}
+
                       InputProps={{
                         disableUnderline: true,
                         classes: {
@@ -247,6 +356,54 @@ class CreateRoom extends React.Component {
             </div>
           </div>
         </Grid>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'middle',
+          }}
+          open={this.state.createError}
+          autoHideDuration={5000}
+          onClose={this.handleClose}
+          ContentProps={{
+            classes: {
+              root: classes.error,
+            },
+            'aria-describedby': 'message-id',
+          }}
+          message={<span style={{ textAlign: 'center', fontSize: 17 }} className={classes.error}>Sorry! Room name is already taken. Please choose another!</span>}
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'middle',
+          }}
+          open={this.state.joinError}
+          autoHideDuration={5000}
+          onClose={this.handleClose}
+          ContentProps={{
+            classes: {
+              root: classes.error,
+            },
+            'aria-describedby': 'message-id',
+          }}
+          message={<span style={{ textAlign: 'center', fontSize: 17 }} className={classes.error}>No room of such name found. Please try again!</span>}
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'middle',
+          }}
+          open={this.state.charError}
+          autoHideDuration={5000}
+          onClose={this.handleClose}
+          ContentProps={{
+            classes: {
+              root: classes.error,
+            },
+            'aria-describedby': 'message-id',
+          }}
+          message={<span style={{ textAlign: 'center', fontSize: 17 }} className={classes.error}>Room codes must be 5 characters or more!</span>}
+        />
       </div>
     )
   }

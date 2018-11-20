@@ -30,11 +30,12 @@ router.delete('/removeSong', (req, res) => {
 })
 
 router.get('/rooms/:roomId', (req, res) => {
-  db.getRoomData({ room: req.query.query }, (err, result) => {
+  console.log(req.query)
+  db.getRoomData({ room: req.query.roomId}, (err, result) => {
     if ( err ) {
       console.log(err);
     } else {
-      res.json(result)
+      res.send(result)
     }
   })
 })

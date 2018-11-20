@@ -80,7 +80,6 @@ class SearchBar extends React.Component {
   }
 
   handleTrackSearch(input) {
-    console.log(input)
 
     let reactThis = this
 
@@ -104,7 +103,6 @@ class SearchBar extends React.Component {
   }
 
   handleArtistSearch(input) {
-    console.log(input)
 
     let reactThis = this
 

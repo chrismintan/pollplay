@@ -117,6 +117,7 @@ const getAccessTokenAndExpiresAt = (req, res) => {
 }
 
 const getRoomData = (req, res) => {
+  console.log(req.room)
   let text = `SELECT * FROM users INNER JOIN rooms USING (spotify_id) WHERE rooms.name = '${req.room}'`;
 
   pool.query(text, (err, result) => {

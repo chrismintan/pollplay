@@ -50,7 +50,11 @@
 	width: 100%;
 }
 
-
+.scroll::-webkit-scrollbar,
+.top::-webkit-scrollbar,
+.contain::-webkit-scrollbar {
+    display: none;
+}
 
 
 

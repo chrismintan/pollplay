@@ -10,6 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Cookies from 'universal-cookie';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import ChatBox from './NowPlaying/ChatBox.jsx';
 
 const styling = theme => ({
   root: {
@@ -44,6 +45,7 @@ class Main extends React.Component {
       trackName: '',
       voteHandler: [],
       nextQueued: false,
+      messageArray: [],
     };
 
     this.socket = io.connect();
@@ -70,6 +72,9 @@ class Main extends React.Component {
 
     // Skip to next song (host only
     this.skipToNext = this.skipToNext.bind(this);
+
+    // Function to send chat msgs
+    this.sendMessage = this.sendMessage.bind(this);
 
     // For testing functions
     this.testing = this.testing.bind(this);
@@ -111,7 +116,7 @@ class Main extends React.Component {
 
     await axios.get(`/api/rooms/${roomId}`, {
       params: {
-        query: roomId
+        roomId: roomId,
       }
     })
     .then(({data}) => {
@@ -184,6 +189,15 @@ class Main extends React.Component {
         })
         reactThis.setState({
           songBank: newSongBank,
+        })
+      } else if ( data.chatBox == true ) {
+        let newArr = reactThis.state.messageArray;
+        newArr = reactThis.state.messageArray.concat(data)
+        reactThis.setState({
+          messageArray: [],
+        })
+        reactThis.setState({
+          messageArray: newArr,
         })
       }
     })
@@ -361,6 +375,11 @@ class Main extends React.Component {
     this.nextSong(this.state.songBank[0].trackURI);
   }
 
+  sendMessage(data) {
+    const {roomId} = this.props.match.params;
+    this.socket.emit(roomId, data)
+  }
+
   testing() {
     // this.setState({
     //   songBank: [],
@@ -386,7 +405,14 @@ class Main extends React.Component {
 
               <Grid item xs={6} spacing={0}>
                 <div className={classes.paper}>
-                  <CurrentSong skipToNext={this.skipToNext} {...this.state} />
+                  <div>
+                    <CurrentSong style={{ width: '100%', height: '50%' }} skipToNext={this.skipToNext} {...this.state} />
+                  </div>
+                  <div>
+                    <div style={{ width: '100%', height: '50%' }}>
+                      <ChatBox roomId={this.state.roomId} sendMessage={this.sendMessage} msgArr={this.state.messageArray} />
+                    </div>
+                  </div>
                 </div>
                 <div>
 
