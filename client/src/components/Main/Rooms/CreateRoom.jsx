@@ -30,6 +30,7 @@ const styles = theme => ({
     marginTop: '60px',
     fontSize: '50px',
     color: '#CCCCCBFF',
+    fontStyle: 'italic',
   },
   root: {
     flexGrow: 1,
@@ -57,7 +58,6 @@ const styles = theme => ({
   textFieldJoin: {
     color: '#FEFEFEFF',
     borderBottom: '1px solid #FEFEFEFF',
-    marginBottom: 5,
     width: '100%',
 
   },
@@ -93,7 +93,8 @@ const styles = theme => ({
     background: 'rgb(186, 38, 26)',
     textAlight: 'center',
     display: 'block',
-  }
+  },
+
 });
 
 
@@ -281,7 +282,7 @@ class CreateRoom extends React.Component {
                     </InputAdornment>
                   )
                 }}
-                label='Create a room!'
+                label='Type to create a room...'
                 InputLabelProps={{
                   style: {
                     textOverflow: 'ellipsis',
@@ -289,9 +290,10 @@ class CreateRoom extends React.Component {
                     overflow: 'hidden',
                     width: '100%',
                     color: '#FEFEFEFF',
-                    fontSize: 30,
+                    fontSize: 20,
                     fontWeight: 'lighter',
-                    marginTop: 15,
+                    marginTop: 25,
+                    fontStyle: 'italic',
                   }
                 }}
               />
@@ -347,6 +349,7 @@ class CreateRoom extends React.Component {
                           fontSize: 20,
                           fontWeight: 'lighter',
                           marginTop: 25,
+                          fontStyle: 'italic',
                         }
                       }}
                     />

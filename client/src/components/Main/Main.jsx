@@ -45,6 +45,7 @@ class Main extends React.Component {
       voteHandler: [],
       nextQueued: false,
       messageArray: [],
+      roomSize: 0,
     };
 
     this.socket = io.connect();
@@ -411,11 +412,13 @@ class Main extends React.Component {
                 <div className={classes.paper}>
                   <SearchBar addSong={this.addSong} songBank={this.state.songBank} access_token={this.state.access_token} />
                 </div>
+
               </Grid>
 
             </Grid>
           </div>
         </div>
+
       </div>
     )
   }
