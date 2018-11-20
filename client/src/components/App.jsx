@@ -16,10 +16,6 @@ class App extends React.Component {
     this.setRoomID = this.setRoomID.bind(this);
   }
 
-  componentDidMount() {
-    console.log(window.location.href)
-  }
-
   setUserID(userID) {
     this.setState({
       userID: userID,

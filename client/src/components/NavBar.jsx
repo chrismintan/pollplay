@@ -135,7 +135,7 @@ class NavBar extends React.Component {
                 <div style={{display: 'inline-block'}}>PollPlay</div>
                 <div style={{display: 'inline-block', float: 'right'}}>
                   <div className="social" >
-                    <Tooltip style={{float: 'right'}} title="Email me!" classes={{ tooltip: classes.toolTip}}>
+                    <Tooltip style={{float: 'right', marginRight: '15px'}} title="Email me!" classes={{ tooltip: classes.toolTip}}>
                       <a href="mailto:chrismintan91@gmail.com?Subject=Hello%20there!" ><img src="/email.png" /></a>
                       </Tooltip>
                     <Tooltip style={{float: 'right'}} title="Github Profile" classes={{ tooltip: classes.toolTip}}>
