@@ -4,11 +4,6 @@ class Message extends React.Component {
   constructor(props) {
     super(props)
 
-    this.test = this.test.bind(this)
-  }
-
-  test() {
-    console.log(this.props)
   }
 
   render() {
@@ -17,12 +12,10 @@ class Message extends React.Component {
 
     let message;
 
-
-
     if ( sender == username ) {
       message = (
         <li className="chat right" style={{float: 'right'}}>
-          <div style={{float: 'right', fontSize: 15, boxSizing: 'initial'}}>{this.props.username}:
+          <div style={{float: 'right', fontSize: 15, boxSizing: 'initial'}}>{this.props.sender}:
           </div>
           <br/>
           <span style={{float: 'right'}}>{this.props.message}
@@ -32,7 +25,7 @@ class Message extends React.Component {
     } else {
       message = (
         <li className="chat left" style={{float: 'left'}}>
-          <div style={{float: 'left', fontSize: 15, boxSizing: 'initial'}}>{this.props.username}:
+          <div style={{float: 'left', fontSize: 15, boxSizing: 'initial'}}>{this.props.sender}:
           </div>
           <br/>
           <span style={{float: 'left'}}>{this.props.message}
@@ -43,21 +36,7 @@ class Message extends React.Component {
 
     return (
       <div>
-
-        <li className="chat left" style={{float: 'left'}}>
-          <div style={{float: 'left', fontSize: 15, boxSizing: 'initial'}}>Chris:
-          </div>
-          <br/>
-          <span style={{float: 'left'}}>message is here
-          </span>
-        </li>
-        <li className="chat left" style={{float: 'right'}}>
-          <div style={{float: 'left', fontSize: 15, boxSizing: 'initial'}}>Chris:
-          </div>
-          <br/>
-          <span style={{float: 'left'}}>message is here
-          </span>
-        </li>
+        {message}
       </div>
     )
   }

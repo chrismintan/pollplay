@@ -86,6 +86,11 @@ class Main extends React.Component {
     var playBackData;
 
     const {roomId} = this.props.match.params;
+
+    this.setState({
+      roomID: roomId,
+    })
+
     let reactThis = this;
 
     // Get all songs in songBank
@@ -191,6 +196,7 @@ class Main extends React.Component {
           songBank: newSongBank,
         })
       } else if ( data.chatBox == true ) {
+        console.log(data)
         let newArr = reactThis.state.messageArray;
         newArr = reactThis.state.messageArray.concat(data)
         reactThis.setState({
@@ -377,6 +383,7 @@ class Main extends React.Component {
 
   sendMessage(data) {
     const {roomId} = this.props.match.params;
+    console.log('MESSAGE:', data)
     this.socket.emit(roomId, data)
   }
 
@@ -410,7 +417,7 @@ class Main extends React.Component {
                   </div>
                   <div>
                     <div style={{ width: '100%', height: '50%' }}>
-                      <ChatBox roomId={this.state.roomId} sendMessage={this.sendMessage} msgArr={this.state.messageArray} />
+                      <ChatBox roomId={this.state.roomID} sendMessage={this.sendMessage} msgArr={this.state.messageArray} />
                     </div>
                   </div>
                 </div>

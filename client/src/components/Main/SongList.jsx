@@ -14,8 +14,6 @@ class SongList extends React.Component {
       )
     })
 
-       // <div className="title" style={{ lineHeight: '53.75px', zIndex: 1000, position: 'relative', display: 'inline-block'}}>Song Queue:</div>
-
     return (
       <div className="contain">
         <div className="contain2">

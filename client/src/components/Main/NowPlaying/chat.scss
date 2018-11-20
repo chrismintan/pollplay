@@ -21,7 +21,7 @@ p {
 .chatroom {
   bottom: 0;
   left: 0;
-  height: 45%;
+  height: 40%;
   width: 50%;
   background-color: transparent;
   border-radius: 5px;
@@ -31,6 +31,8 @@ p {
   margin-right: 5px;
   // transform: translateX(-10px);
   transform: translate(-10px, 10px);
+  overflow: hidden;
+  margin-bottom: 50px;
 }
 
 .chatroom h3 {
@@ -49,7 +51,8 @@ p {
   // box-sizing: border-box;
   padding: 0 20px;
   margin: 10px 0 0;
-  height: 510px;
+  height: 85%;
+  margin-top: 30px;
   overflow-y: scroll;
 }
 
@@ -131,10 +134,6 @@ span {
 	box-sizing: initial !important;
 }
 
-*, *::before, *::after {
-	box-sizing: initial !important;
-}
-
 br {
 	display: block;
 	margin: 5px 0;
@@ -142,7 +141,19 @@ br {
 
 .bottom {
 	display: absolute;
-	z-index: 8888;
+	z-index: 1200;
+}
+
+.bubbles {
+	margin-bottom: 100px;
+}
+
+.coverText {
+	z-index: 9999;
+	bottom: 10px;
+	left: 0px;
+	line-height: 20px;
+	color: red;
 }
 
 .form {
@@ -151,8 +162,9 @@ br {
 	bottom: 10px;
 	width: 50vw;
 	line-height: 20px;
+	transform: translateY(20px);
 }
 
 .chats {
-	transform: translateY(20px);
+	transform: translateY(-20px);
 }

@@ -29,7 +29,7 @@ class ChatBox extends React.Component {
   }
 
   componentWillMount() {
-    // this.persistentState()
+    this.persistentState()
   }
 
   componentDidMount() {
@@ -67,11 +67,12 @@ class ChatBox extends React.Component {
     this.setState({
       username: input,
     })
+    localStorage.setItem('pollPlayUserName', JSON.stringify(input))
   }
 
   chatInput(e) {
     if ( this.state.username == false ) {
-      this.handleClickOpen;
+      this.handleClickOpen();
     } else {
       this.setState({
         input: e.target.value,
@@ -81,6 +82,9 @@ class ChatBox extends React.Component {
 
   submitMessage(e) {
     e.preventDefault();
+    if ( this.state.username == false ) {
+      return
+    }
     let roomId = this.props.roomId
     let username = this.state.username;
     let message = this.state.input;
@@ -91,29 +95,35 @@ class ChatBox extends React.Component {
       message: this.state.input,
       chatBox: true
     }
+    this.scrollToBot();
     this.props.sendMessage(data)
+    console.log('SENDERCHATBOX:', data)
     this.setState({
       input: '',
     })
   }
 
+  scrollToBot() {
+    ReactDOM.findDOMNode(this.refs.chats).scrollBot = ReactDOM.findDOMNode(this.refs.chats).scrollHeight;
+  }
+
   persistentState() {
     let username = this.state.username
     for ( username in this.state ) {
-    if ( localStorage.hasOwnProperty(pollPlayUserName) ) {
-      let value = localStorage.getItem(pollPlayUserName);
-      value = JSON.parse(value);
-      this.setState({
-        username: value,
-      })
-    }
+      if ( localStorage.hasOwnProperty('pollPlayUserName')) {
+        let value = localStorage.getItem('pollPlayUserName');
+        value = JSON.parse(value);
+        this.setState({
+          username: value,
+        })
+      }
     }
   }
 
   render() {
     let messages = this.props.msgArr.map( (msgArr, index) => {
       return (
-        <Message key={index} sender={msgArr.sender} username={this.state.username} message={msgArr.message} />
+        <Message key={index} sender={msgArr.username} username={this.state.username} message={msgArr.message} />
       )
     })
 
@@ -141,6 +151,7 @@ class ChatBox extends React.Component {
                     this.handleSelectName();
                   }
                 }}
+                value={this.state.usernameInput}
                 onChange={this.handleNameSelectChange}
                 autoFocus
                 margin="dense"
@@ -167,19 +178,21 @@ class ChatBox extends React.Component {
 
     return (
       <div>
-
+        {prompt}
         <div className="chatroom">
-          <h3>PollPlay Chat!</h3>
+          <h3 style={{zIndex: 9999}}>PollPlay Chat!</h3>
           <ul className="chats" ref="chats">
-            {messages}
+            <div className="bubbles">
+              {messages}
+            </div>
           </ul>
           <div className="bottom">
-            <form className="form">
-              <input style={{width: '65%', marginBottom: '20px'}} type="text" ref="msg" placeholder="Type something to chat!" value={this.state.input} onChange={this.chatInput} />
-              <button onClick={this.submitMessage}>Send!</button>
-            </form>
           </div>
         </div>
+        <form className="form">
+          <input style={{width: '65%', marginBottom: '20px', lineHeight: '30px', fontSize: '15px'}} type="text" ref="msg" placeholder="Type something to chat!" value={this.state.input} onChange={this.chatInput} />
+          <button style={{lineHeight: '30px', transform: 'translateY(-2px)'}} onClick={this.submitMessage}>Send!</button>
+        </form>
       </div>
     )
   }
