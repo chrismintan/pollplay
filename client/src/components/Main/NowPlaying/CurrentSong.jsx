@@ -13,22 +13,15 @@ const styling = {
   },
 }
 
-
 class CurrentSong extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       init: false,
     }
-    this.testing = this.testing.bind(this);
-  }
-
-  testing() {
-    console.log('works')
   }
 
   componentDidMount() {
-    console.log('CURRENTSONG MOUNTED!')
 
     const cookies = new Cookies();
 

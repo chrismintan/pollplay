@@ -7,6 +7,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 const styling = {
   appBar: {
@@ -16,6 +20,17 @@ const styling = {
   contain: {
     height: 60,
     position: 'relative',
+  },
+  toolTip: {
+    background: 'white',
+    color: 'black',
+    // boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+  icon: {
+    color: 'white',
+    padding: 0,
+    margin: 0,
   }
 }
 
@@ -27,11 +42,12 @@ class NavBar extends React.Component {
       profilePic: '',
       displayName: '',
       userId: null,
+      expanded: false,
     };
 
     this.toggleActive = this.toggleActive.bind(this);
-
     this.handleToggle = this.handleToggle.bind(this);
+    this.social = this.social.bind(this);
   }
 
   toggleActive() {
@@ -54,6 +70,12 @@ class NavBar extends React.Component {
     });
   }
 
+  social() {
+    this.setState({
+      expanded: !this.state.expanded,
+    })
+  }
+
   handleToggle() {
     this.toggleActive()
     document.getElementById("body").classList.toggle('nav-open');
@@ -61,6 +83,25 @@ class NavBar extends React.Component {
 
   render() {
     const { classes } = this.props;
+
+    let social;
+
+    if ( this.state.expanded == true ) {
+      social = (
+        <span>
+          <IconButton onClick={this.social}>
+            <KeyboardArrowRight className={classes.icon} />
+          </IconButton>
+          <span className='name' style={{display: 'inline-block'}}>An&nbsp;app&nbsp;made&nbsp;by:&nbsp;<strong id="copy">©</strong>hristopher&nbsp;Tan&nbsp;&nbsp;</span>
+        </span>
+      )
+    } else {
+      social = (
+        <IconButton onClick={this.social}>
+          <KeyboardArrowLeft className={classes.icon} />
+        </IconButton>
+      )
+    }
 
     let profile;
     if ( this.state.profilePic != '' && this.state.displayName != '' ) {
@@ -92,7 +133,20 @@ class NavBar extends React.Component {
             <div className="head">
               <div id="head">
                 <div style={{display: 'inline-block'}}>PollPlay</div>
-                <div  style={{display: 'inline-block', float: 'right'}}>PollPlay</div>
+                <div style={{display: 'inline-block', float: 'right'}}>
+                  <div className="social" >
+                    <Tooltip style={{float: 'right'}} title="Email me!" classes={{ tooltip: classes.toolTip}}>
+                      <a href="mailto:chrismintan91@gmail.com?Subject=Hello%20there!" ><img src="/email.png" /></a>
+                      </Tooltip>
+                    <Tooltip style={{float: 'right'}} title="Github Profile" classes={{ tooltip: classes.toolTip}}>
+                      <a href="https://github.com/chrismintan" target="_blank" ><img src="/github.png" /></a>
+                    </Tooltip>
+                    <Tooltip style={{float: 'right'}} title="LinkedIn Profile" classes={{ tooltip: classes.toolTip}}>
+                      <a target="_blank" href="https://www.linkedin.com/in/chrismintan/" ><img src="/linkedin.png" /></a>
+                    </Tooltip>
+                    {social}
+                  </div>
+                </div>
               </div>
             </div>
 

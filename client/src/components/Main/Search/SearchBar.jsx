@@ -1,6 +1,5 @@
 import React from 'react';
 import DropDownSongList from './DropDownSongList.jsx';
-import {data} from '../../../dummy_data.js';
 import axios from 'axios';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';

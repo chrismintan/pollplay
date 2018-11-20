@@ -19,6 +19,7 @@
     "css-loader": "^1.0.1",
     "node-sass": "^4.10.0",
     "nodemon": "^1.18.4",
+    "react-social-icons": "^3.0.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "webpack": "^4.25.1",

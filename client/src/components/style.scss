@@ -286,3 +286,20 @@
 	margin: auto;
 }
 
+.social img {
+	transform: translateY(15px);
+	width: 30px;
+	height: 30px;
+	display: inline-block;
+	float: right;
+	cursor: pointer;
+}
+
+.name {
+	font-size: 15px;
+}
+
+#copy {
+	font-size: 25px;
+}
+

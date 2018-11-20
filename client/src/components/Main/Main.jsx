@@ -1,5 +1,4 @@
 import React from 'react';
-import {data} from '../../dummy_data.js';
 import axios from 'axios';
 import SearchBar from './Search/SearchBar.jsx';
 import SongList from './SongList.jsx';
@@ -75,9 +74,6 @@ class Main extends React.Component {
 
     // Function to send chat msgs
     this.sendMessage = this.sendMessage.bind(this);
-
-    // For testing functions
-    this.testing = this.testing.bind(this);
   }
 
   // Setting up player update function (for host)
@@ -196,7 +192,6 @@ class Main extends React.Component {
           songBank: newSongBank,
         })
       } else if ( data.chatBox == true ) {
-        console.log(data)
         let newArr = reactThis.state.messageArray;
         newArr = reactThis.state.messageArray.concat(data)
         reactThis.setState({
@@ -242,7 +237,6 @@ class Main extends React.Component {
   }
 
   updateStatus(data) {
-    console.log(data)
     let reactThis = this;
     this.setState({
       access_token: data.access_token,
@@ -311,13 +305,11 @@ class Main extends React.Component {
   upVoteSong(songData) {
     const {roomId} = this.props.match.params;
     songData.roomID = this.state.roomID;
-    console.log('upVoteSong()', songData)
     this.socket.emit(roomId, songData);
   }
 
   updateVotes(songData) {
     if ( this.state.host == true ) {
-      console.log('updateVotes()', songData);
       axios.put('/api/upVoteSong', songData)
       .then((data) => {
         console.log('Vote success!', data);
@@ -345,8 +337,6 @@ class Main extends React.Component {
     this.setState({
       nextQueued: false,
     })
-
-    console.log(this.state)
 
     // Removing played song from the DB pool
     if ( this.state.host == true ) {
@@ -377,32 +367,17 @@ class Main extends React.Component {
   }
 
   skipToNext() {
-    console.log('CLICKED!')
     this.nextSong(this.state.songBank[0].trackURI);
   }
 
   sendMessage(data) {
     const {roomId} = this.props.match.params;
-    console.log('MESSAGE:', data)
     this.socket.emit(roomId, data)
-  }
-
-  testing() {
-    // this.setState({
-    //   songBank: [],
-    // })
-    // console.log(this.state.songBank)
-    const {roomId} = this.props.match.params;
-    console.log(roomId)
-    console.log('clicked!')
-    let message = "Hello everyone!"
-    this.socket.emit(roomId, message)
-    console.log('clicked!')
   }
 
   render() {
     const { classes } = this.props;
-      // <button onClick={this.testing}>TEST BUTTON!</button>
+
     return (
       <div className="contain">
         <CssBaseline />

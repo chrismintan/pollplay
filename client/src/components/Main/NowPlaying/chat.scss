@@ -30,7 +30,7 @@ p {
   position: fixed;
   margin-right: 5px;
   // transform: translateX(-10px);
-  transform: translate(-10px, 10px);
+  transform: translate(-10px, 20px);
   overflow: hidden;
   margin-bottom: 50px;
 }
@@ -95,7 +95,7 @@ p {
   display: flex;
   flex-direction: row;
   align-items: center;
-  z-index: 1000;
+  z-index: 5;
 }
 
 .chatroom .input input[type="text"] {
@@ -141,7 +141,7 @@ br {
 
 .bottom {
 	display: absolute;
-	z-index: 1200;
+	z-index: 5;
 }
 
 .bubbles {
@@ -149,7 +149,7 @@ br {
 }
 
 .coverText {
-	z-index: 9999;
+	z-index: 5;
 	bottom: 10px;
 	left: 0px;
 	line-height: 20px;
@@ -157,7 +157,7 @@ br {
 }
 
 .form {
-	z-index: 9999;
+	z-index: 5;
 	position: fixed;
 	bottom: 10px;
 	width: 50vw;
@@ -167,4 +167,9 @@ br {
 
 .chats {
 	transform: translateY(-20px);
+}
+
+.chat-title {
+	transform: translateY(10px);
+	z-index: 1000;
 }

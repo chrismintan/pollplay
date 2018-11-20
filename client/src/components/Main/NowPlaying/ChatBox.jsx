@@ -32,12 +32,16 @@ class ChatBox extends React.Component {
     this.persistentState()
   }
 
-  componentDidMount() {
-    // this.persistentState();
+  scrollToBottom() {
+    this.messagesEnd.scrollIntoView();
   }
 
-  componentWillUnmount() {
-    // this.persistentState();
+  componentDidMount() {
+    this.scrollToBottom();
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
   }
 
   handleClickOpen() {
@@ -95,17 +99,15 @@ class ChatBox extends React.Component {
       message: this.state.input,
       chatBox: true
     }
-    this.scrollToBot();
     this.props.sendMessage(data)
-    console.log('SENDERCHATBOX:', data)
     this.setState({
       input: '',
     })
   }
 
-  scrollToBot() {
-    ReactDOM.findDOMNode(this.refs.chats).scrollBot = ReactDOM.findDOMNode(this.refs.chats).scrollHeight;
-  }
+  // scrollToBot() {
+  //   ReactDOM.findDOMNode(this.refs.chats).scrollBot = ReactDOM.findDOMNode(this.refs.chats).scrollHeight;
+  // }
 
   persistentState() {
     let username = this.state.username
@@ -180,11 +182,14 @@ class ChatBox extends React.Component {
       <div>
         {prompt}
         <div className="chatroom">
-          <h3 style={{zIndex: 9999}}>PollPlay Chat!</h3>
+          <h3 className="chat-title">PollPlay Chat!</h3>
           <ul className="chats" ref="chats">
             <div className="bubbles">
               {messages}
             </div>
+            <div style={{ float:"left", clear: "both" }}
+             ref={(el) => { this.messagesEnd = el; }}>
+        </div>
           </ul>
           <div className="bottom">
           </div>
