@@ -9,7 +9,7 @@ html, body {
 	margin: 0;
 	height: 100vh;
 	background: linear-gradient(to top, black, #4C4C4BFF);
-	font-family: ""Helvetica Neue"", Helvetica;
+	/*font-family: ""Helvetica Neue"", Helvetica;*/
 }
 
 .searchbar {
