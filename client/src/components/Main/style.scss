@@ -57,6 +57,11 @@ div .top {
     display: none;
 }
 
+#queue {
+	font-family: "Helvetica Neue", Helvetica;
+	font-weight: 200;
+}
+
 @media only screen and (min-device-width: 320px) and (max-device-width: 540px) {
 	.top {
 		font-size: 10px;

@@ -13,7 +13,7 @@ div.toast {
   text-align: center;
   padding-top: 40px;
   padding-bottom: 40px;
-  transform: translateY(100px);
+  transform: translateY(200px);
   transition: all 1.0s ease-in-out;
   opacity: 0.0;
   width: 100%;
@@ -22,7 +22,7 @@ div.toast {
 }
 
 div.toast.visible {
-  transform: translateY(0);
+  transform: translateY(2px);
   opacity: 1.0;
 }
 
