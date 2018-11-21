@@ -302,9 +302,9 @@ class Main extends React.Component {
     songBank.sort(compare);
 
     // For some reason setting the state with only 1 change in variable doesnt re render the child component
-    // this.setState({
-    //   songBank: [],
-    // })
+    this.setState({
+      songBank: [],
+    })
     this.setState({
       songBank: songBank,
     })

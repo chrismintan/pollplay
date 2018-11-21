@@ -98,7 +98,7 @@ class Songs extends React.Component {
     console.log(this.props.trackURI)
     let persist = this.props.trackURI
     localStorage.setItem(persist, JSON.stringify(true))
-    let likes = parseInt(this.state.likes) + 1
+    let likes = parseInt(this.state.likes) + 1;
     this.setState({
       upVoted: true,
       likes: likes,
@@ -109,7 +109,7 @@ class Songs extends React.Component {
         albumImageURL: this.props.image,
         trackURI: this.props.trackURI,
         upVote: true,
-        likes: this.state.likes,
+        likes: likes,
       }
     this.props.upVoteSong(songData)
   }
@@ -129,7 +129,7 @@ class Songs extends React.Component {
         albumImageURL: this.props.image,
         trackURI: this.props.trackURI,
         downVote: true,
-        likes: this.state.likes,
+        likes: likes,
       }
     this.props.downVoteSong(songData)
   }
