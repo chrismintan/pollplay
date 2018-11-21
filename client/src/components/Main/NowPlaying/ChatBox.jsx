@@ -96,7 +96,7 @@ class ChatBox extends React.Component {
 
   submitMessage(e) {
     e.preventDefault();
-    if ( this.state.username == false ) {
+    if ( this.state.username == false || this.state.input.length == 0 ) {
       return
     }
     let roomId = this.props.roomId
@@ -139,6 +139,14 @@ class ChatBox extends React.Component {
         <Message key={index} sender={msgArr.username} username={this.state.username} message={msgArr.message} />
       )
     })
+
+    let welcome;
+
+    if ( this.state.username != false ) {
+      welcome = `Welcome ${this.state.username}! `
+    } else {
+      welcome = 'PollPlay Chat!'
+    }
 
     let prompt;
 
@@ -193,7 +201,7 @@ class ChatBox extends React.Component {
       <div>
         {prompt}
         <div className="chatroom">
-          <h3 className="chat-title">PollPlay Chat!</h3>
+          <h3 className="chat-title">{welcome}</h3>
           <ul className="chats" ref="chats">
             <div className="bubbles">
               {messages}
@@ -206,7 +214,7 @@ class ChatBox extends React.Component {
           </div>
         </div>
         <div>
-        <form className="form">
+        <form className="form" onSubmit={this.submitMessage}>
           <input style={{width: '65%', marginBottom: '20px', lineHeight: '30px', fontSize: '15px'}} type="text" ref="msg" placeholder="Type something to chat!" value={this.state.input} onChange={this.chatInput} />
 
           <Button onClick={this.submitMessage} style={{transform: "translateY(-2px)"}} variant="contained" color="primary" className={classes.button}>Send</Button>
