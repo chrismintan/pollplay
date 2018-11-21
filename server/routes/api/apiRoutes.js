@@ -9,6 +9,16 @@ const axios = require('axios');
 //   res.json(req.session.spotifyId || null);
 // });
 
+router.put('/downVoteSong', (req, res) => {
+  db.downVoteSong( { roomID: req.body.roomID, trackURI: req.body.trackURI }, (err, result) => {
+    if ( err ) {
+      console.log('Error:', err);
+    } else {
+      res.json(result);
+    }
+  })
+})
+
 router.put('/upVoteSong', (req, res) => {
   db.upVoteSong( { roomID: req.body.roomID, trackURI: req.body.trackURI }, (err, result) => {
     if ( err ) {

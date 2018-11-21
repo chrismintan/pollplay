@@ -10,7 +10,7 @@ class SongList extends React.Component {
   render() {
     let songPoll = this.props.songBank.map( (songBank, index) => {
       return (
-        <Songs key={index} title={songBank.trackName} artist={songBank.artistName} image={songBank.albumImageURL} upVoteSong={this.props.upVoteSong} trackURI={songBank.trackURI} likes={songBank.likes} />
+        <Songs downVoteSong={this.props.downVoteSong} key={index} title={songBank.trackName} artist={songBank.artistName} image={songBank.albumImageURL} upVoteSong={this.props.upVoteSong} trackURI={songBank.trackURI} likes={songBank.likes} />
       )
     })
 

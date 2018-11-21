@@ -75,6 +75,10 @@ class Main extends React.Component {
 
     // Function to send chat msgs
     this.sendMessage = this.sendMessage.bind(this);
+
+    // Downvotes
+    this.downVoteSong = this.downVoteSong.bind(this);
+    this.updateDownVotes = this.updateDownVotes.bind(this);
   }
 
   // Setting up player update function (for host)
@@ -183,6 +187,11 @@ class Main extends React.Component {
           reactThis.updateSongBank(data.trackURI);
         if ( reactThis.state.host == true ) {
           reactThis.updateVotes(data);
+        }
+      } else if ( data.downVote == true ) {
+          reactThis.downVoteSongBank(data.trackURI);
+        if( reactThis.state.host == true ) {
+          reactThis.updateDownVotes(data);
         }
       } else if ( data.nextSong == true ) {
         let newSongBank = reactThis.state.songBank.slice(1);
@@ -303,10 +312,58 @@ class Main extends React.Component {
     })
   }
 
+  // Downvote
+  downVoteSongBank(trackURI) {
+    let songBank = this.state.songBank;
+    for ( var i in songBank ) {
+      if ( songBank[i].trackURI == trackURI ) {
+        songBank[i].likes = parseInt(songBank[i].likes) - 1;
+      }
+    }
+
+    // Sort songs from most likes to least
+    function compare(a, b) {
+      if ( parseInt(a.likes) > parseInt(b.likes) )
+        return -1;
+      if ( parseInt(a.likes) < parseInt(b.likes) )
+        return 1;
+      return 0;
+    }
+
+    // Sorting songBank by most likes
+    songBank.sort(compare);
+
+    // For some reason setting the state with only 1 change in variable doesnt re render the child component
+    this.setState({
+      songBank: [],
+    })
+    this.setState({
+      songBank: songBank,
+    })
+  }
+
   upVoteSong(songData) {
     const {roomId} = this.props.match.params;
     songData.roomID = this.state.roomID;
     this.socket.emit(roomId, songData);
+  }
+
+  downVoteSong(songData) {
+    const {roomId} = this.props.match.params;
+    songData.roomID = this.state.roomID;
+    this.socket.emit(roomId, songData);
+  }
+
+  updateDownVotes(songData) {
+    if ( this.state.host == true ) {
+      axios.put('/api/downVoteSong', songData)
+      .then((data) => {
+        console.log('Vote success!', data);
+      })
+      .catch(function(error) {
+        console.log('Vote failed', error);
+      })
+    }
   }
 
   updateVotes(songData) {
@@ -404,7 +461,7 @@ class Main extends React.Component {
 
               <Grid item xs={3} spacing={0} padding={0}>
                 <div className={classes.paper}>
-                  <SongList songBank={this.state.songBank} upVoteSong={this.upVoteSong} />
+                  <SongList downVoteSong={this.downVoteSong} songBank={this.state.songBank} upVoteSong={this.upVoteSong} />
                 </div>
               </Grid>
 

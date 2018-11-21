@@ -81,6 +81,7 @@ class Songs extends React.Component {
       likes: '',
     }
     this.handleClick = this.handleClick.bind(this);
+    this.handleDownVote = this.handleDownVote.bind(this);
   }
 
   componentWillMount() {
@@ -94,6 +95,7 @@ class Songs extends React.Component {
   }
 
   handleClick(e) {
+    console.log(this.props.trackURI)
     let persist = this.props.trackURI
     localStorage.setItem(persist, JSON.stringify(true))
     let likes = parseInt(this.state.likes) + 1
@@ -110,6 +112,26 @@ class Songs extends React.Component {
         likes: this.state.likes,
       }
     this.props.upVoteSong(songData)
+  }
+
+  handleDownVote(e) {
+    console.log('clicked')
+    let persist = this.props.trackURI
+    localStorage.setItem(persist, JSON.stringify(false))
+    let likes = parseInt(this.state.likes) - 1;
+    this.setState({
+      upVoted: false,
+      likes: likes,
+    })
+    let songData = {
+        trackName: this.props.title,
+        artistName: this.props.artist,
+        albumImageURL: this.props.image,
+        trackURI: this.props.trackURI,
+        downVote: true,
+        likes: this.state.likes,
+      }
+    this.props.downVoteSong(songData)
   }
 
   persistentState() {
@@ -202,7 +224,7 @@ class Songs extends React.Component {
                     </Grid>
                     <Grid item xs={2}>
                     <div className="liking">
-                      <div className={classes.centered}>{this.state.likes}&nbsp;<Favorite className={classes.noVote} /></div>
+                      <div className={classes.centered}>{this.state.likes}&nbsp;<Favorite onClick={this.handleDownVote} className={classes.noVote} /></div>
                     </div>
                     </Grid>
                   </Grid>

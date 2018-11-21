@@ -185,6 +185,18 @@ const updateAccessTokenAndExpiresAt = (req, res) => {
   })
 }
 
+const downVoteSong = (req, res) => {
+  console.log('index.js database REQ:', req)
+  let text = `UPDATE songs_rooms SET upvote = upvote - 1 WHERE room_code = '${req.roomID}' AND track_uri = '${req.trackURI}' RETURNING *`;
+  pool.query(text, (err, result) => {
+    if ( err ) {
+      console.log(err);
+    } else {
+      res(null, result);
+    }
+  })
+}
+
 const upVoteSong = (req, res) => {
   console.log('index.js database REQ:', req)
   let text = `UPDATE songs_rooms SET upvote = upvote + 1 WHERE room_code = '${req.roomID}' AND track_uri = '${req.trackURI}' RETURNING *`;
@@ -201,6 +213,7 @@ module.exports = {
   addRoom,
   addSongToRoom,
   addUser,
+  downVoteSong,
   getAccessTokenAndExpiresAt,
   getRoomData,
   getSongsInRoom,
