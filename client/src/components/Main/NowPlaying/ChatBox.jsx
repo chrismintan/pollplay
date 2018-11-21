@@ -9,6 +9,16 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { withStyles } from '@material-ui/core/styles';
+
+const styling = theme => ({
+  button: {
+    margin: 0,
+  },
+  input: {
+    display: 'none',
+  },
+});
 
 class ChatBox extends React.Component {
   constructor(props) {
@@ -123,6 +133,7 @@ class ChatBox extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     let messages = this.props.msgArr.map( (msgArr, index) => {
       return (
         <Message key={index} sender={msgArr.username} username={this.state.username} message={msgArr.message} />
@@ -197,7 +208,8 @@ class ChatBox extends React.Component {
         <div>
         <form className="form">
           <input style={{width: '65%', marginBottom: '20px', lineHeight: '30px', fontSize: '15px'}} type="text" ref="msg" placeholder="Type something to chat!" value={this.state.input} onChange={this.chatInput} />
-          <button className="chat-send" style={{ lineHeight: '31px', backgroundColor: "grey", transform: "translateY(-2px)"}} onClick={this.submitMessage}>Send!</button>
+
+          <Button onClick={this.submitMessage} style={{transform: "translateY(-2px)"}} variant="contained" color="primary" className={classes.button}>Send</Button>
         </form>
         </div>
       </div>
@@ -205,4 +217,4 @@ class ChatBox extends React.Component {
   }
 }
 
-export default ChatBox;
+export default withStyles(styling)(ChatBox);
