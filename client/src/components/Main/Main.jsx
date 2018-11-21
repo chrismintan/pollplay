@@ -224,9 +224,7 @@ class Main extends React.Component {
     axios.get('/spotify/currentSong')
     .then(({data}) => {
       playBackData = data;
-      playBackData.access_token = reactThis.state.access_token;
       playBackData.updateStatus = true;
-
       reactThis.socket.emit(roomId, playBackData)
 
       // Checking to see if next song should be played

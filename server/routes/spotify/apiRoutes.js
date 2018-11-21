@@ -130,7 +130,9 @@ router.get('/currentSong', async (req, res) => {
   try {
     const {data} = await axios(options);
     if ( typeof data === 'object' ) {
-      res.json(data);
+      let playback = data;
+      playback.access_token = curAccessToken;
+      res.json(playback)
     }
   } catch(err) {
     console.log(err);
