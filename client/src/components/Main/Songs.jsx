@@ -139,7 +139,7 @@ class Songs extends React.Component {
 
     if ( this.state.upVoted == false ) {
       song =  <div>
-                <Card className={classes.card1}>
+                <Card className={classes.card1} id="card">
                   <Grid container
                         spacing={24}
                         direction="row"
@@ -147,24 +147,27 @@ class Songs extends React.Component {
                         justify="center"
                   >
                     <Grid item xs={2}>
-                      <CardMedia  className={classes.cover}
+                      <CardMedia  id="card-image"
+                                  className={classes.cover}
                                   image={this.props.image}
                       />
                     </Grid>
                     <Grid item xs={8}>
                       <div className={classes.details}>
                         <CardContent className={classes.content}>
-                          <Typography className={classes.title}>
+                          <Typography id="card-title">
                             {this.props.title}
                           </Typography>
-                          <Typography className={classes.artist}>
+                          <Typography className={classes.artist} id="card-artist">
                             {this.props.artist}
                           </Typography>
                         </CardContent>
                       </div>
                     </Grid>
                     <Grid item xs={2}>
+                    <div className="liking">
                       <div className={classes.centered} >{this.state.likes}&nbsp;<FavoriteBorder onClick={this.handleClick} className={classes.vote} /></div>
+                    </div>
                     </Grid>
                   </Grid>
                 </Card>
@@ -172,7 +175,7 @@ class Songs extends React.Component {
 
     } else if ( this.state.upVoted == true ) {
       song =  <div>
-                <Card className={classes.card1}>
+                <Card className={classes.card1} id="card">
                   <Grid container
                         spacing={24}
                         direction="row"
@@ -180,24 +183,27 @@ class Songs extends React.Component {
                         justify="center"
                   >
                     <Grid item xs={2}>
-                      <CardMedia  className={classes.cover}
+                      <CardMedia  id="card-image"
+                                  className={classes.cover}
                                   image={this.props.image}
                       />
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid item xs={8} className="test">
                       <div className={classes.details}>
                         <CardContent className={classes.content}>
-                          <Typography className={classes.title}>
+                          <Typography  id="card-title">
                             {this.props.title}
                           </Typography>
-                          <Typography className={classes.artist}>
+                          <Typography className={classes.artist} id="card-artist">
                             {this.props.artist}
                           </Typography>
                         </CardContent>
                       </div>
                     </Grid>
                     <Grid item xs={2}>
+                    <div className="liking">
                       <div className={classes.centered}>{this.state.likes}&nbsp;<Favorite className={classes.noVote} /></div>
+                    </div>
                     </Grid>
                   </Grid>
                 </Card>

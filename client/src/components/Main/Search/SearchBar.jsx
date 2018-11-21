@@ -13,7 +13,7 @@ import styling from './styling.scss';
 const styles = {
   appBar: {
     height: 60,
-    background: 'transparent',
+    background: 'rgb(69, 69, 69)',
   },
   textField: {
     color: '#FEFEFEFF',
@@ -131,8 +131,8 @@ class SearchBar extends React.Component {
       <div className="contain">
       <div className="contain2">
         <div style={{ position: 'fixed' }}>
-        <div className="top" style={{ lineHeight: '53.75px', backgroundColor: 'rgba(69,69,69)', position: 'fixed', zIndex: 100, display: 'block', width: '100%' }}></div>
-          <form style={{ width: '48%', display: 'inline-block', float: 'left'}}>
+        <div className="top" style={{ lineHeight: '53.75px', backgroundColor: 'transparent', position: 'fixed', zIndex: 100, display: 'block', width: '100%' }}></div>
+          <form className="searchbar" style={{float: 'left'}}>
             <TextField
               fullWidth
               onKeyPress={(event) => {
@@ -163,7 +163,7 @@ class SearchBar extends React.Component {
                 } }} />
           </form>
 
-          <form style={{ width: '48%', display: 'inline-block', marginLeft: 5}}>
+          <form className="track-search searchbar" style={{ marginLeft: 5}}>
             <TextField
               fullWidth
               onKeyPress={(event) => {

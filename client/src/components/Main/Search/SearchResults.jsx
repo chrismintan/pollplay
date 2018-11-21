@@ -82,15 +82,16 @@ class SearchResults extends React.Component {
       <div onClick={this.handleClick}>
 
         <Card className={classes.card}>
-          <CardMedia  className={classes.cover}
+          <CardMedia  id="card-image"
+                      className={classes.cover}
                       image={this.props.image}
           />
           <div className={classes.details}>
             <CardContent className={classes.content}>
-              <Typography className={classes.title}>
+              <Typography className={classes.title} id="card-title">
                 {this.props.title}
               </Typography>
-              <Typography className={classes.artist}>
+              <Typography className={classes.artist} id="card-artist">
                 {this.props.artist}
               </Typography>
             </CardContent>

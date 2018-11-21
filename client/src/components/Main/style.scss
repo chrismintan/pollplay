@@ -6,7 +6,7 @@
 	overflow-x: hidden;
 }
 
-.top {
+div .top {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,6 +16,7 @@
   height: 53.75px;
   white-space: nowrap;
   color: #FEFEFEFF;
+  background-color: transparent;
 }
 
 .contain2 {
@@ -56,6 +57,11 @@
     display: none;
 }
 
+@media only screen and (min-device-width: 320px) and (max-device-width: 540px) {
+	.top {
+		font-size: 10px;
+	}
+}
 
 
 

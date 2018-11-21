@@ -173,3 +173,9 @@ br {
 	transform: translateY(10px);
 	z-index: 1000;
 }
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 540px) {
+	.top {
+		font-size: 10px;
+	}
+}

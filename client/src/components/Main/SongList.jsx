@@ -18,7 +18,7 @@ class SongList extends React.Component {
       <div className="contain">
         <div className="contain2">
           <div style={{ position: 'fixed' }}>
-          <div className="top" style={{ lineHeight: '53.75px', backgroundColor: 'rgba(69,69,69)', position: 'fixed', zIndex: 50, display: 'block', width: '25%' }}>Song Queue:</div>
+          <div className="top" style={{ lineHeight: '53.75px', position: 'fixed', zIndex: 50, display: 'block', width: '25%' }}><span id="queue">Song Queue:</span></div>
           <div style={{ width: '100%', textAlign: 'center' }}>
 
           </div>
