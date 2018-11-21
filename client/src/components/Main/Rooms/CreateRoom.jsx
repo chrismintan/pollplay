@@ -106,6 +106,7 @@ class CreateRoom extends React.Component {
       roomInput: '',
       spotifyId: '',
       createError: false,
+      charError: false,
       joinError: false,
       vertical: 'top',
       horizontal: 'center',
@@ -156,6 +157,13 @@ class CreateRoom extends React.Component {
 
     if ( this.state.input.length < 5 ) {
       this.charError();
+      setTimeout(function() {
+        reactThis.setState({
+          createError: false,
+          joinError: false,
+          charError: false,
+        })
+      }, 5000)
     } else if ( this.state.input.length > 4 ) {
       axios.get(`/api/rooms/${this.state.input}`, {
         params: {
@@ -169,6 +177,13 @@ class CreateRoom extends React.Component {
             reactThis.props.history.push(`/rooms/${roomId}`);
           } else {
             this.throwCreateError();
+            setTimeout(function() {
+              reactThis.setState({
+                createError: false,
+                joinError: false,
+                charErr9r: false,
+              })
+            }, 5000)
           }
         } else if ( data.length == 0 ) {
           this.createAndRedirect();
@@ -203,27 +218,37 @@ class CreateRoom extends React.Component {
   }
 
   // Joining a room Input - this.state.roomInput function - this.joinRoom
-  async joinRoom(event) {
+  joinRoom(event) {
     event.preventDefault()
     let reactThis = this;
     let roomCode = this.state.roomInput.toLowerCase();
 
-    axios.get(`/api/rooms/${roomCode}`, {
-      params: {
-        roomId: roomCode,
-      }
-    })
-    .then(({data}) => {
-      if ( data.length == 0 ) {
-        reactThis.throwJoinError
-      } else {
-        reactThis.props.setRoomID(roomCode);
-        reactThis.props.history.push(`/rooms/${roomCode}`);
-      }
-    })
-    .catch(err => {
-      console.log('error!', err)
-    })
+    if ( roomCode != 0 ) {
+      axios.get(`/api/rooms/${roomCode}`, {
+        params: {
+          roomId: roomCode,
+        }
+      })
+      .then(({data}) => {
+          console.log(data.length)
+
+        if ( data.length == 0 ) {
+          reactThis.throwJoinError()
+          setTimeout(function() {
+            reactThis.setState({
+              createError: false,
+              joinError: false,
+            })
+          }, 5000)
+        } else {
+          reactThis.props.setRoomID(roomCode);
+          reactThis.props.history.push(`/rooms/${roomCode}`);
+        }
+      })
+      .catch(err => {
+        console.log('error!', err)
+      })
+    }
   }
 
   throwCreateError() {
