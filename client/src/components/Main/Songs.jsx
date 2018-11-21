@@ -155,7 +155,7 @@ class Songs extends React.Component {
                     <Grid item xs={8}>
                       <div className={classes.details}>
                         <CardContent className={classes.content}>
-                          <Typography id="card-title">
+                          <Typography className={classes.title} id="card-title">
                             {this.props.title}
                           </Typography>
                           <Typography className={classes.artist} id="card-artist">
@@ -191,7 +191,7 @@ class Songs extends React.Component {
                     <Grid item xs={8} className="test">
                       <div className={classes.details}>
                         <CardContent className={classes.content}>
-                          <Typography  id="card-title">
+                          <Typography className={classes.title} id="card-title">
                             {this.props.title}
                           </Typography>
                           <Typography className={classes.artist} id="card-artist">

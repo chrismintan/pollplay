@@ -197,7 +197,7 @@ class ChatBox extends React.Component {
         <div>
         <form className="form">
           <input style={{width: '65%', marginBottom: '20px', lineHeight: '30px', fontSize: '15px'}} type="text" ref="msg" placeholder="Type something to chat!" value={this.state.input} onChange={this.chatInput} />
-          <button className="chat-send" style={{ lineHeight: '30px', backgroundColor: "grey", transform: "translateY(-1px)"}} onClick={this.submitMessage}>Send!</button>
+          <button className="chat-send" style={{ lineHeight: '31px', backgroundColor: "grey", transform: "translateY(-2px)"}} onClick={this.submitMessage}>Send!</button>
         </form>
         </div>
       </div>
