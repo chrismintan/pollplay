@@ -89,10 +89,17 @@ class SearchBar extends React.Component {
       }
     })
     .then(({data: {items}}) => {
+      let arr = []
 
-      if ( items.length != 0 ) {
+      for ( let i = 0; i < items.length; i++ ) {
+        if ( typeof items[i].artists[0].name != 'undefined' && typeof items[i].album.images[1].url != 'undefined' && typeof items[i].uri != 'undefined' ) {
+          arr.push(items[i])
+        }
+      }
+
+      if ( arr.length > 0 ) {
         reactThis.setState({
-          spotifyResults: items,
+          spotifyResults: arr,
         });
       }
 
@@ -113,9 +120,17 @@ class SearchBar extends React.Component {
     })
     .then(({data: {items}}) => {
 
-      if ( items.length != 0 ) {
+      let arr = []
+
+      for ( let i = 0; i < items.length; i++ ) {
+        if ( typeof items[i].artists[0].name != 'undefined' && typeof items[i].album.images[1].url != 'undefined' && typeof items[i].uri != 'undefined' ) {
+          arr.push(items[i])
+        }
+      }
+
+      if ( arr.length > 0 ) {
         reactThis.setState({
-          spotifyResults: items,
+          spotifyResults: arr,
         });
       }
 

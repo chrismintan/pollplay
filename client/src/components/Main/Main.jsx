@@ -418,7 +418,6 @@ class Main extends React.Component {
             </Grid>
           </div>
         </div>
-
       </div>
     )
   }
