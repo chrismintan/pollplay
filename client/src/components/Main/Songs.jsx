@@ -64,6 +64,9 @@ const styling = theme => ({
   },
   noVote: {
     color: '#FE4365',
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
   centered: {
     display: 'flex',
