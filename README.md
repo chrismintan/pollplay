@@ -54,11 +54,13 @@ For more information on how I made the app read on!
 ## Application and Development Process
 ### Spotify OAuth 2.0
 ![OAuth](https://github.com/chrismintan/pollplay/blob/master/public/oauth1.png)
+
 Have you visited a site recently, where you are given the option of connecting or signing up using Google, Facebook or Twitter? Sure you have! This is basically what OAuth is all about; granting third-party services permission to do something for you-like you logging in.
 
 OAuth is a framework that gives users the ability to grant access to their information stored in one place, from another place. The idea is that a user is giving Spotify certain permission to access their Facebook details, so that Fadcebook can provide Spotify with enough inbformation to sign them in, enhance their profile details, or display what their friends are listening to.
 
 ![OAuth](https://github.com/chrismintan/pollplay/blob/master/public/oauth2.png)
+
 Why is this important? It is because without an API for exchanging this information, a user would have to give a third party site their Facebook username and password thereby **giving them too much power**. This is where OAuth comes in. I have included it in this project as using Facebook to authenticate the Spotify login is immensely more convenient.
 
 ### OAuth Problems
